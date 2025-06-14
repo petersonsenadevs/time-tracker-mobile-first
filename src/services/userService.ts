@@ -18,6 +18,15 @@ export interface User {
   role: string;
 }
 
+export interface Employee {
+  name: string;
+  company_name: string;
+  normal_hourly_rate: string;
+  overtime_hourly_rate: string;
+  holiday_hourly_rate: string;
+  irpf: number;
+}
+
 interface UpdateEmailResponse {
   message: string;
   user: User;
@@ -34,6 +43,10 @@ interface DeleteUserResponse {
 
 interface ChangePasswordResponse {
   message: string;
+}
+
+interface EmployeeResponse {
+  employee: Employee;
 }
 
 export const userService = {
@@ -62,6 +75,20 @@ export const userService = {
       }
       
       throw new Error('Error al obtener información del usuario');
+    }
+  },
+
+  async getEmployee(token: string): Promise<EmployeeResponse> {
+    try {
+      return await apiClient.getWithAuth<EmployeeResponse>('/api/employee', token);
+    } catch (error) {
+      console.error('Get employee error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('Error al obtener información del empleado');
     }
   },
 
