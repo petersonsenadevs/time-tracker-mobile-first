@@ -15,7 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import BottomNavBar from '@/components/BottomNavBar';
 
 const Profile = () => {
-  const { token, logout, user } = useAuth();
+  const { token, logout } = useAuth();
   const [emailForm, setEmailForm] = useState({ email: '' });
   const [passwordForm, setPasswordForm] = useState({
     old_password: '',
@@ -23,8 +23,8 @@ const Profile = () => {
     password_confirmation: ''
   });
 
-  // Obtener información del usuario
-  const { data: userInfo, refetch } = useQuery({
+  // Obtener información del usuario desde la API
+  const { data: userInfo, refetch, isLoading } = useQuery({
     queryKey: ['user', token],
     queryFn: () => userService.showUser(token!),
     enabled: !!token,
@@ -96,7 +96,32 @@ const Profile = () => {
     changePasswordMutation.mutate(passwordForm);
   };
 
-  const currentUser = userInfo?.user || user;
+  // Usar los datos del endpoint user/show
+  const currentUser = userInfo?.user;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto mb-4"></div>
+          <p className="text-gray-300">Cargando información del perfil...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400">Error al cargar la información del usuario</p>
+          <Button onClick={() => refetch()} className="mt-4 bg-teal-500 hover:bg-teal-600 text-black">
+            Reintentar
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white pb-20 lg:pb-8">
@@ -105,14 +130,14 @@ const Profile = () => {
         <div className="flex items-center gap-4 mb-8">
           <Avatar className="h-20 w-20">
             <AvatarFallback className="bg-teal-500/20 text-teal-400 text-2xl">
-              {currentUser?.name?.charAt(0)?.toUpperCase() || 'U'}
+              {currentUser.email?.charAt(0)?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
           <div>
             <h1 className="text-3xl font-bold text-white">Mi Perfil</h1>
-            <p className="text-gray-400">{currentUser?.email}</p>
+            <p className="text-gray-400">{currentUser.email}</p>
             <span className="inline-block px-3 py-1 mt-2 text-xs font-medium bg-teal-500/20 text-teal-400 rounded-full">
-              {currentUser?.role === 'employee' ? 'Empleado' : currentUser?.role}
+              {currentUser.role === 'employee' ? 'Empleado' : currentUser.role}
             </span>
           </div>
         </div>
@@ -131,16 +156,18 @@ const Profile = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-gray-300">Nombre</Label>
-                <p className="text-white font-medium">{currentUser?.name}</p>
+                <Label className="text-sm font-medium text-gray-300">ID de Usuario</Label>
+                <p className="text-white font-medium font-mono text-sm">{currentUser.id}</p>
               </div>
               <div>
                 <Label className="text-sm font-medium text-gray-300">Email</Label>
-                <p className="text-white font-medium">{currentUser?.email}</p>
+                <p className="text-white font-medium">{currentUser.email}</p>
               </div>
               <div>
                 <Label className="text-sm font-medium text-gray-300">Rol</Label>
-                <p className="text-white font-medium capitalize">{currentUser?.role}</p>
+                <p className="text-white font-medium capitalize">
+                  {currentUser.role === 'employee' ? 'Empleado' : currentUser.role}
+                </p>
               </div>
             </CardContent>
           </Card>
