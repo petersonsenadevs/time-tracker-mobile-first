@@ -1,12 +1,14 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { authService, LoginData, RegisterData } from '@/services/authService';
 
 interface AuthUser {
-  id: number;
+  id: number | string;
   email: string;
-  name: string;
+  name?: string;
+  role?: string;
   company_name?: string;
 }
 

@@ -12,8 +12,8 @@ export interface ChangePasswordData {
 }
 
 export interface User {
-  id: number;
-  name: string;
+  id: number | string;
+  name?: string;
   email: string;
   role: string;
 }
