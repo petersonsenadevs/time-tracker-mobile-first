@@ -7,11 +7,10 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { X, Clock, MapPin } from 'lucide-react';
+import { X, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { hourSessionService, HourSessionData } from '@/services/hourSessionService';
@@ -21,8 +20,6 @@ const workDaySchema = z.object({
   endTime: z.string().min(1, 'Hora de fin es requerida'),
   plannedHours: z.string().min(1, 'Horas planificadas son requeridas'),
   workType: z.string().optional(),
-  location: z.string().optional(),
-  description: z.string().optional(),
 });
 
 type WorkDayFormData = z.infer<typeof workDaySchema>;
@@ -43,8 +40,6 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
       endTime: '',
       plannedHours: '8',
       workType: 'NORMAL',
-      location: '',
-      description: '',
     },
   });
 
@@ -189,46 +184,6 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
                         <SelectItem value="HOLIDAY" className="text-white hover:bg-gray-700">Holiday</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-300 flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      Ubicación
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Oficina, cliente, remoto..."
-                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-300">Descripción</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Descripción de las actividades realizadas..."
-                        rows={3}
-                        className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400 resize-none"
-                      />
-                    </FormControl>
                     <FormMessage className="text-red-400" />
                   </FormItem>
                 )}
