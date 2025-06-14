@@ -13,13 +13,25 @@ interface HourSessionResponse {
   message: string;
 }
 
+interface ValidationError {
+  message: string;
+  errors?: Record<string, string[]>;
+}
+
 export const hourSessionService = {
   async registerHourSession(data: HourSessionData, token: string): Promise<HourSessionResponse> {
     try {
       console.log('Registering hour session:', data);
       return await apiClient.postWithAuth<HourSessionResponse>('/api/hour_session', data, token);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Hour session registration error:', error);
+      
+      // Si el error tiene errores de validación, los pasamos tal como vienen
+      if (error?.errors) {
+        const validationError = new Error(error.message || 'Error de validación') as any;
+        validationError.errors = error.errors;
+        throw validationError;
+      }
       
       if (error instanceof Error) {
         // Mapear errores específicos de la API

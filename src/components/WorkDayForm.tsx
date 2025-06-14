@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { hourSessionService, HourSessionData } from '@/services/hourSessionService';
 
 const workDaySchema = z.object({
+  date: z.string().min(1, 'La fecha es requerida'),
   startTime: z.string().min(1, 'Hora de inicio es requerida'),
   endTime: z.string().min(1, 'Hora de fin es requerida'),
   plannedHours: z.string().min(1, 'Horas planificadas son requeridas'),
@@ -36,12 +37,18 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
   const form = useForm<WorkDayFormData>({
     resolver: zodResolver(workDaySchema),
     defaultValues: {
+      date: format(selectedDate, 'yyyy-MM-dd'), // Formato americano
       startTime: '',
       endTime: '',
       plannedHours: '8',
       workType: 'NORMAL',
     },
   });
+
+  // Actualizar la fecha cuando cambie selectedDate
+  React.useEffect(() => {
+    form.setValue('date', format(selectedDate, 'yyyy-MM-dd'));
+  }, [selectedDate, form]);
 
   const registerHourSessionMutation = useMutation({
     mutationFn: async (data: HourSessionData) => {
@@ -53,18 +60,52 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
       form.reset();
       onClose();
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error registering hour session:', error);
+      
+      // Mostrar errores específicos de validación si existen
+      if (error?.errors) {
+        Object.entries(error.errors).forEach(([field, messages]: [string, any]) => {
+          if (Array.isArray(messages) && messages.length > 0) {
+            // Mapear los nombres de campos de la API a los del formulario
+            const fieldMap: Record<string, string> = {
+              'date': 'date',
+              'start_time': 'startTime',
+              'end_time': 'endTime',
+              'planned_hours': 'plannedHours',
+            };
+            
+            const formField = fieldMap[field] as keyof WorkDayFormData;
+            if (formField) {
+              form.setError(formField, { 
+                type: 'server', 
+                message: messages[0] 
+              });
+            }
+          }
+        });
+      }
+      
       toast.error(error.message || 'Error al registrar la jornada');
     },
   });
 
   const handleSubmit = (data: WorkDayFormData) => {
+    // Validar que planned_hours sea al menos 2
+    const plannedHoursNum = parseInt(data.plannedHours);
+    if (plannedHoursNum < 2) {
+      form.setError('plannedHours', {
+        type: 'manual',
+        message: 'Las horas planificadas deben ser mínimo 2'
+      });
+      return;
+    }
+
     const hourSessionData: HourSessionData = {
-      date: format(selectedDate, 'yyyy-MM-dd'),
+      date: data.date, // Ya está en formato americano
       start_time: data.startTime,
       end_time: data.endTime,
-      planned_hours: parseInt(data.plannedHours),
+      planned_hours: plannedHoursNum,
       work_type: data.workType || undefined,
     };
 
@@ -102,6 +143,20 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
         <div className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              {/* Campo de fecha (oculto pero presente para validación) */}
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem className="hidden">
+                    <FormControl>
+                      <Input {...field} type="hidden" />
+                    </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}

@@ -1,3 +1,4 @@
+
 const API_BASE_URL = 'https://jornalia-api.fly.dev';
 
 interface ApiError {
@@ -32,7 +33,13 @@ class ApiClient {
       const errorData: ApiError = await response.json().catch(() => ({
         message: 'Error de conexión con el servidor'
       }));
-      throw new Error(errorData.message || `Error ${response.status}`);
+      
+      // Crear error con información de validación si existe
+      const error = new Error(errorData.message || `Error ${response.status}`) as any;
+      if (errorData.errors) {
+        error.errors = errorData.errors;
+      }
+      throw error;
     }
 
     return response.json();
