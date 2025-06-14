@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -45,7 +44,7 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 const Register = () => {
-  const { register, isLoading } = useAuth();
+  const { register, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<RegisterFormData>({
@@ -63,6 +62,13 @@ const Register = () => {
     },
   });
 
+  // Redirigir al dashboard cuando el usuario esté autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       const registerData: RegisterData = {
@@ -77,7 +83,7 @@ const Register = () => {
         irpf: data.irpf ? parseFloat(data.irpf) : undefined,
       };
       await register(registerData);
-      navigate('/login');
+      // La navegación se hará automáticamente por el useEffect cuando isAuthenticated cambie
     } catch (error) {
       console.error('Error en registro:', error);
     }

@@ -47,10 +47,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     mutationFn: async (data: LoginData) => {
       return await authService.login(data);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setToken(data.token);
       localStorage.setItem('token', data.token);
-      toast.success('Sesión iniciada correctamente');
+      
+      // Verificar inmediatamente el token y obtener datos del usuario
+      try {
+        const dashboardData = await authService.verifyDashboardAccess(data.token);
+        setUser(dashboardData.user);
+        toast.success('Sesión iniciada correctamente');
+      } catch (error) {
+        console.error('Error verifying dashboard access after login:', error);
+        setToken(null);
+        setUser(null);
+        localStorage.removeItem('token');
+        throw error;
+      }
     },
     onError: (error) => {
       toast.error(error.message);
@@ -61,8 +73,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     mutationFn: async (data: RegisterData) => {
       return await authService.register(data);
     },
-    onSuccess: () => {
+    onSuccess: async (_, originalData) => {
       toast.success('Empleado creado exitosamente');
+      
+      // Hacer login automático después del registro exitoso
+      try {
+        const loginData: LoginData = {
+          email: originalData.email,
+          password: originalData.password,
+        };
+        const loginResponse = await authService.login(loginData);
+        setToken(loginResponse.token);
+        localStorage.setItem('token', loginResponse.token);
+        
+        // Verificar el token y obtener datos del usuario
+        const dashboardData = await authService.verifyDashboardAccess(loginResponse.token);
+        setUser(dashboardData.user);
+        toast.success('Sesión iniciada automáticamente');
+      } catch (error) {
+        console.error('Error during auto-login after registration:', error);
+        toast.error('Registro exitoso. Por favor, inicia sesión manualmente.');
+      }
     },
     onError: (error) => {
       toast.error(error.message);

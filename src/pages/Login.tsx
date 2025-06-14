@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -24,7 +24,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const form = useForm<LoginFormData>({
@@ -35,6 +35,13 @@ const Login = () => {
     },
   });
 
+  // Redirigir al dashboard cuando el usuario esté autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       const loginData: LoginData = {
@@ -42,7 +49,7 @@ const Login = () => {
         password: data.password,
       };
       await login(loginData);
-      navigate('/dashboard');
+      // La navegación se hará automáticamente por el useEffect cuando isAuthenticated cambie
     } catch (error) {
       console.error('Error en login:', error);
     }
