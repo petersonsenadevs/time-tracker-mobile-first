@@ -1,4 +1,3 @@
-
 const API_BASE_URL = 'https://jornalia-api.fly.dev';
 
 interface ApiError {
@@ -43,6 +42,16 @@ class ApiClient {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
+    });
+  }
+
+  async postWithAuth<T>(endpoint: string, data: any, token: string): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     });
   }
 

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -83,9 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('Dashboard data received after login:', dashboardResponse);
         
         // Actualizar con datos reales del usuario y estadísticas
-        if (dashboardResponse.user && 
-            dashboardResponse.user._type !== 'undefined' && 
-            dashboardResponse.user.id) {
+        if (dashboardResponse.user && dashboardResponse.user.id) {
           setUser(dashboardResponse.user);
         }
         setDashboardStats(dashboardResponse.dashboardData);
@@ -142,9 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('Auth verification successful:', dashboardResponse);
       
       // Verificar si hay datos de usuario válidos
-      if (dashboardResponse.user && 
-          dashboardResponse.user._type !== 'undefined' && 
-          dashboardResponse.user.id) {
+      if (dashboardResponse.user && dashboardResponse.user.id) {
         setUser(dashboardResponse.user);
       } else {
         // Si no hay datos de usuario válidos, crear un usuario básico

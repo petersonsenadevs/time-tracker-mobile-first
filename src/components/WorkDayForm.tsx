@@ -5,16 +5,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { X, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '@/contexts/AuthContext';
+import { hourSessionService, HourSessionData } from '@/services/hourSessionService';
 
 const workDaySchema = z.object({
   startTime: z.string().min(1, 'Hora de inicio es requerida'),
   endTime: z.string().min(1, 'Hora de fin es requerida'),
-  breakTime: z.string().optional(),
+  plannedHours: z.string().min(1, 'Horas planificadas son requeridas'),
+  workType: z.string().optional(),
   location: z.string().optional(),
   description: z.string().optional(),
 });
@@ -29,21 +35,49 @@ interface WorkDayFormProps {
 }
 
 const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormProps) => {
+  const { token } = useAuth();
   const form = useForm<WorkDayFormData>({
     resolver: zodResolver(workDaySchema),
     defaultValues: {
       startTime: '',
       endTime: '',
-      breakTime: '',
+      plannedHours: '8',
+      workType: 'NORMAL',
       location: '',
       description: '',
     },
   });
 
+  const registerHourSessionMutation = useMutation({
+    mutationFn: async (data: HourSessionData) => {
+      if (!token) throw new Error('No hay token de autenticación');
+      return await hourSessionService.registerHourSession(data, token);
+    },
+    onSuccess: () => {
+      toast.success('Jornada registrada exitosamente');
+      form.reset();
+      onClose();
+    },
+    onError: (error) => {
+      console.error('Error registering hour session:', error);
+      toast.error(error.message || 'Error al registrar la jornada');
+    },
+  });
+
   const handleSubmit = (data: WorkDayFormData) => {
+    const hourSessionData: HourSessionData = {
+      date: format(selectedDate, 'yyyy-MM-dd'),
+      start_time: data.startTime,
+      end_time: data.endTime,
+      planned_hours: parseInt(data.plannedHours),
+      work_type: data.workType || undefined,
+    };
+
+    console.log('Submitting hour session:', hourSessionData);
+    registerHourSessionMutation.mutate(hourSessionData);
+    
+    // También llamar al callback original por compatibilidad
     onSubmit(data);
-    form.reset();
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -119,18 +153,42 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
 
               <FormField
                 control={form.control}
-                name="breakTime"
+                name="plannedHours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-300">Tiempo de Descanso (minutos)</FormLabel>
+                    <FormLabel className="text-gray-300">Horas Planificadas</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         type="number"
-                        placeholder="0"
+                        min="2"
+                        placeholder="8"
                         className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
                       />
                     </FormControl>
+                    <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="workType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-300">Tipo de Trabajo</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="bg-gray-800 border-gray-700 text-white focus:border-teal-400">
+                          <SelectValue placeholder="Selecciona el tipo" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="NORMAL" className="text-white hover:bg-gray-700">Normal</SelectItem>
+                        <SelectItem value="OVERTIME" className="text-white hover:bg-gray-700">Overtime</SelectItem>
+                        <SelectItem value="HOLIDAY" className="text-white hover:bg-gray-700">Holiday</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage className="text-red-400" />
                   </FormItem>
                 )}
@@ -182,14 +240,16 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
                   variant="ghost"
                   onClick={onClose}
                   className="flex-1 text-gray-300 hover:text-white hover:bg-gray-800"
+                  disabled={registerHourSessionMutation.isPending}
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   className="flex-1 bg-teal-500 hover:bg-teal-600 text-black font-semibold"
+                  disabled={registerHourSessionMutation.isPending}
                 >
-                  Guardar Jornada
+                  {registerHourSessionMutation.isPending ? 'Guardando...' : 'Guardar Jornada'}
                 </Button>
               </div>
             </form>
