@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, Mail, Lock, Trash2, LogOut, Settings, Bell, Shield, Globe, Palette, Database } from 'lucide-react';
+import { User, Mail, Lock, Trash2, LogOut, Settings as SettingsIcon, Bell, Shield, Globe, Palette, Database } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import BottomNavBar from '@/components/BottomNavBar';
 
@@ -177,7 +177,7 @@ const Settings = () => {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-teal-500/20 rounded-xl">
-            <Settings className="h-8 w-8 text-teal-400" />
+            <SettingsIcon className="h-8 w-8 text-teal-400" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white">Configuración</h1>
