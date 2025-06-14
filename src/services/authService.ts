@@ -26,6 +26,16 @@ interface RegisterResponse {
   message: string;
 }
 
+interface DashboardResponse {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    company_name?: string;
+  };
+  stats?: any;
+}
+
 export const authService = {
   async login(data: LoginData): Promise<LoginResponse> {
     try {
@@ -69,6 +79,15 @@ export const authService = {
       }
       
       throw new Error('Error al registrar usuario');
+    }
+  },
+
+  async verifyDashboardAccess(token: string): Promise<DashboardResponse> {
+    try {
+      return await apiClient.getWithAuth<DashboardResponse>('/api/dashboard', token);
+    } catch (error) {
+      console.error('Dashboard verification error:', error);
+      throw error;
     }
   }
 };

@@ -51,6 +51,15 @@ class ApiClient {
       method: 'GET',
     });
   }
+
+  async getWithAuth<T>(endpoint: string, token: string): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);

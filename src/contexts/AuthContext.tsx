@@ -1,10 +1,11 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { authService, LoginData, RegisterData } from '@/services/authService';
 
 interface AuthUser {
+  id: number;
   email: string;
   name: string;
   company_name?: string;
@@ -15,9 +16,11 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isCheckingAuth: boolean;
   login: (data: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  checkAuthStatus: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,6 +40,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
@@ -65,6 +69,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
+  const checkAuthStatus = async () => {
+    if (!token) return;
+    
+    setIsCheckingAuth(true);
+    try {
+      const dashboardData = await authService.verifyDashboardAccess(token);
+      setUser(dashboardData.user);
+    } catch (error) {
+      console.error('Auth verification failed:', error);
+      logout();
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      checkAuthStatus();
+    }
+  }, [token]);
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -84,11 +109,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     token,
-    isAuthenticated: !!token,
+    isAuthenticated: !!token && !!user,
     isLoading: loginMutation.isPending || registerMutation.isPending,
+    isCheckingAuth,
     login,
     register,
     logout,
+    checkAuthStatus,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
