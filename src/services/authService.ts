@@ -26,14 +26,42 @@ interface RegisterResponse {
   message: string;
 }
 
+interface DailyWorkHour {
+  date: string;
+  startTime: string;
+  endTime: string;
+  plannedHours: number;
+  actualHours: number;
+  workType: 'NORMAL' | 'OVERTIME' | 'HOLIDAY';
+}
+
+interface DashboardData {
+  totalHoursWorked: number;
+  currentMonthSalary: number;
+  dailyWorkHours: DailyWorkHour[];
+}
+
 interface DashboardResponse {
-  user: {
+  message: string;
+  dashboardData: DashboardData;
+  user?: {
     id: number;
     name: string;
     email: string;
     company_name?: string;
   };
-  stats?: any;
+}
+
+// Tipo para la respuesta actual (para compatibilidad)
+interface LegacyDashboardResponse {
+  total_hours_worked: number;
+  current_month_salary: number;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    company_name?: string;
+  };
 }
 
 export const authService = {
@@ -84,7 +112,25 @@ export const authService = {
 
   async verifyDashboardAccess(token: string): Promise<DashboardResponse> {
     try {
-      return await apiClient.getWithAuth<DashboardResponse>('/api/dashboard', token);
+      const response = await apiClient.getWithAuth<DashboardResponse | LegacyDashboardResponse>('/api/dashboard', token);
+      console.log('Dashboard API response:', response);
+      
+      // Verificar si es la respuesta nueva con la estructura correcta
+      if ('dashboardData' in response && 'message' in response) {
+        return response as DashboardResponse;
+      }
+      
+      // Si es la respuesta legacy, convertirla al nuevo formato
+      const legacyResponse = response as LegacyDashboardResponse;
+      return {
+        message: "Dashboard retrieved successfully",
+        dashboardData: {
+          totalHoursWorked: legacyResponse.total_hours_worked || 0,
+          currentMonthSalary: legacyResponse.current_month_salary || 0,
+          dailyWorkHours: []
+        },
+        user: legacyResponse.user
+      };
     } catch (error) {
       console.error('Dashboard verification error:', error);
       throw error;

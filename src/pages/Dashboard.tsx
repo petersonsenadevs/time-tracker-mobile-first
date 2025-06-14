@@ -9,7 +9,7 @@ import BottomNavBar from '@/components/BottomNavBar';
 import WorkDayForm from '@/components/WorkDayForm';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, dashboardStats, logout } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isFormOpen, setIsFormOpen] = useState(false);
 
@@ -76,8 +76,12 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white mb-1">156.5h</div>
-              <p className="text-teal-300 text-sm">+12h vs mes anterior</p>
+              <div className="text-3xl font-bold text-white mb-1">
+                {dashboardStats?.totalHoursWorked?.toFixed(1) || '0.0'}h
+              </div>
+              <p className="text-teal-300 text-sm">
+                {dashboardStats?.dailyWorkHours?.length || 0} días trabajados
+              </p>
             </CardContent>
           </Card>
 
@@ -85,12 +89,14 @@ const Dashboard = () => {
             <CardHeader className="pb-3">
               <CardTitle className="text-white flex items-center text-base">
                 <CalendarDays className="h-5 w-5 mr-2 text-blue-400" />
-                Días trabajados
+                Salario actual
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-white mb-1">22</div>
-              <p className="text-blue-300 text-sm">de 30 días del mes</p>
+              <div className="text-3xl font-bold text-white mb-1">
+                €{dashboardStats?.currentMonthSalary?.toFixed(2) || '0.00'}
+              </div>
+              <p className="text-blue-300 text-sm">este mes</p>
             </CardContent>
           </Card>
         </div>

@@ -11,9 +11,23 @@ interface AuthUser {
   company_name?: string;
 }
 
+interface DashboardStats {
+  totalHoursWorked: number;
+  currentMonthSalary: number;
+  dailyWorkHours: Array<{
+    date: string;
+    startTime: string;
+    endTime: string;
+    plannedHours: number;
+    actualHours: number;
+    workType: 'NORMAL' | 'OVERTIME' | 'HOLIDAY';
+  }>;
+}
+
 interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
+  dashboardStats: DashboardStats | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   isCheckingAuth: boolean;
@@ -40,6 +54,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(!!localStorage.getItem('token'));
   const queryClient = useQueryClient();
 
@@ -54,14 +69,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       // Verificar inmediatamente el token y obtener datos del usuario
       try {
-        const dashboardData = await authService.verifyDashboardAccess(data.token);
-        console.log('Dashboard data received:', dashboardData);
-        setUser(dashboardData.user);
+        const dashboardResponse = await authService.verifyDashboardAccess(data.token);
+        console.log('Dashboard data received:', dashboardResponse);
+        
+        // Extraer datos del usuario y estadísticas
+        if (dashboardResponse.user) {
+          setUser(dashboardResponse.user);
+        }
+        setDashboardStats(dashboardResponse.dashboardData);
+        
         toast.success('Sesión iniciada correctamente');
       } catch (error) {
         console.error('Error verifying dashboard access after login:', error);
         setToken(null);
         setUser(null);
+        setDashboardStats(null);
         localStorage.removeItem('token');
         throw error;
       }
@@ -90,8 +112,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('token', loginResponse.token);
         
         // Verificar el token y obtener datos del usuario
-        const dashboardData = await authService.verifyDashboardAccess(loginResponse.token);
-        setUser(dashboardData.user);
+        const dashboardResponse = await authService.verifyDashboardAccess(loginResponse.token);
+        if (dashboardResponse.user) {
+          setUser(dashboardResponse.user);
+        }
+        setDashboardStats(dashboardResponse.dashboardData);
         toast.success('Sesión iniciada automáticamente');
       } catch (error) {
         console.error('Error during auto-login after registration:', error);
@@ -112,9 +137,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('Checking auth status with token:', token);
     setIsCheckingAuth(true);
     try {
-      const dashboardData = await authService.verifyDashboardAccess(token);
-      console.log('Auth verification successful:', dashboardData);
-      setUser(dashboardData.user);
+      const dashboardResponse = await authService.verifyDashboardAccess(token);
+      console.log('Auth verification successful:', dashboardResponse);
+      
+      if (dashboardResponse.user) {
+        setUser(dashboardResponse.user);
+      }
+      setDashboardStats(dashboardResponse.dashboardData);
     } catch (error) {
       console.error('Auth verification failed:', error);
       logout();
@@ -131,6 +160,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('Logging out user');
     setToken(null);
     setUser(null);
+    setDashboardStats(null);
     localStorage.removeItem('token');
     queryClient.clear();
     toast.success('Sesión cerrada');
@@ -147,6 +177,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     token,
+    dashboardStats,
     isAuthenticated: !!token && !!user,
     isLoading: loginMutation.isPending || registerMutation.isPending,
     isCheckingAuth,
