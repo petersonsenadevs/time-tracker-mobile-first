@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Clock } from 'lucide-react';
+import { RegisterData } from '@/services/authService';
 
 const registerSchema = z.object({
   name: z.string()
@@ -26,19 +27,18 @@ const registerSchema = z.object({
     .max(40, 'Contraseña no puede exceder 40 caracteres'),
   normal_hourly_rate: z.string()
     .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
-    .transform(Number),
+    .min(1, 'Tarifa normal es requerida'),
   overtime_hourly_rate: z.string()
     .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
-    .transform(Number),
+    .min(1, 'Tarifa extra es requerida'),
   night_hourly_rate: z.string()
     .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
-    .transform(Number),
+    .min(1, 'Tarifa nocturna es requerida'),
   holiday_hourly_rate: z.string()
     .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
-    .transform(Number),
+    .min(1, 'Tarifa festivos es requerida'),
   irpf: z.string()
     .regex(/^\d{1,2}(\.\d{1,2})?$/, 'Formato inválido (máx. 2 dígitos, 2 decimales)')
-    .transform(Number)
     .optional(),
 });
 
@@ -65,12 +65,18 @@ const Register = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const submitData = {
-        ...data,
+      const registerData: RegisterData = {
+        name: data.name,
         company_name: data.company_name || undefined,
-        irpf: data.irpf || undefined,
+        email: data.email,
+        password: data.password,
+        normal_hourly_rate: parseFloat(data.normal_hourly_rate),
+        overtime_hourly_rate: parseFloat(data.overtime_hourly_rate),
+        night_hourly_rate: parseFloat(data.night_hourly_rate),
+        holiday_hourly_rate: parseFloat(data.holiday_hourly_rate),
+        irpf: data.irpf ? parseFloat(data.irpf) : undefined,
       };
-      await register(submitData);
+      await register(registerData);
       navigate('/login');
     } catch (error) {
       console.error('Error en registro:', error);

@@ -1,29 +1,13 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { authService, LoginData, RegisterData } from '@/services/authService';
 
 interface AuthUser {
   email: string;
   name: string;
   company_name?: string;
-}
-
-interface RegisterData {
-  name: string;
-  company_name?: string;
-  password: string;
-  email: string;
-  normal_hourly_rate: number;
-  overtime_hourly_rate: number;
-  night_hourly_rate: number;
-  holiday_hourly_rate: number;
-  irpf?: number;
-}
-
-interface LoginData {
-  email: string;
-  password: string;
 }
 
 interface AuthContextType {
@@ -57,20 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
-      const response = await fetch('/api/v1/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Error al iniciar sesión');
-      }
-
-      return response.json();
+      return await authService.login(data);
     },
     onSuccess: (data) => {
       setToken(data.token);
@@ -84,20 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterData) => {
-      const response = await fetch('/api/v1/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Error al registrar usuario');
-      }
-
-      return response.json();
+      return await authService.register(data);
     },
     onSuccess: () => {
       toast.success('Empleado creado exitosamente');

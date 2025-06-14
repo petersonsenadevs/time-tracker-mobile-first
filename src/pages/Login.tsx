@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Clock } from 'lucide-react';
+import { LoginData } from '@/services/authService';
 
 const loginSchema = z.object({
   email: z.string()
@@ -36,7 +37,11 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data);
+      const loginData: LoginData = {
+        email: data.email,
+        password: data.password,
+      };
+      await login(loginData);
       navigate('/dashboard');
     } catch (error) {
       console.error('Error en login:', error);
