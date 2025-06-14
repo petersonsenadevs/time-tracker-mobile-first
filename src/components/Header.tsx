@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Menu, X, Clock, LogIn, UserPlus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
@@ -11,10 +12,10 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <Clock className="h-8 w-8 text-teal-400" />
             <span className="text-xl font-bold text-white">TimeTracker</span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -31,13 +32,17 @@ const Header = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="text-gray-300 hover:text-teal-400 hover:bg-teal-500/10">
-              <LogIn className="w-4 h-4 mr-2" />
-              Iniciar Sesión
+            <Button variant="ghost" className="text-gray-300 hover:text-teal-400 hover:bg-teal-500/10" asChild>
+              <Link to="/login">
+                <LogIn className="w-4 h-4 mr-2" />
+                Iniciar Sesión
+              </Link>
             </Button>
-            <Button className="bg-teal-500 hover:bg-teal-600 text-black font-semibold">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Registrarse
+            <Button className="bg-teal-500 hover:bg-teal-600 text-black font-semibold" asChild>
+              <Link to="/register">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Registrarse
+              </Link>
             </Button>
           </div>
 
@@ -78,13 +83,17 @@ const Header = () => {
                 Contacto
               </a>
               <div className="pt-4 border-t border-teal-500/20 space-y-2">
-                <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-teal-400 hover:bg-teal-500/10">
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Iniciar Sesión
+                <Button variant="ghost" className="w-full justify-start text-gray-300 hover:text-teal-400 hover:bg-teal-500/10" asChild>
+                  <Link to="/login">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Iniciar Sesión
+                  </Link>
                 </Button>
-                <Button className="w-full bg-teal-500 hover:bg-teal-600 text-black font-semibold">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Registrarse
+                <Button className="w-full bg-teal-500 hover:bg-teal-600 text-black font-semibold" asChild>
+                  <Link to="/register">
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Registrarse
+                  </Link>
                 </Button>
               </div>
             </div>

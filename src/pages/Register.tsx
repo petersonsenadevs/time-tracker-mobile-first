@@ -1,0 +1,310 @@
+
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Clock } from 'lucide-react';
+
+const registerSchema = z.object({
+  name: z.string()
+    .min(1, 'Nombre es requerido')
+    .max(55, 'Nombre no puede exceder 55 caracteres'),
+  company_name: z.string()
+    .max(55, 'Nombre de empresa no puede exceder 55 caracteres')
+    .optional(),
+  email: z.string()
+    .email('Email inválido')
+    .max(70, 'Email no puede exceder 70 caracteres')
+    .min(1, 'Email es requerido'),
+  password: z.string()
+    .min(8, 'Contraseña debe tener al menos 8 caracteres')
+    .max(40, 'Contraseña no puede exceder 40 caracteres'),
+  normal_hourly_rate: z.string()
+    .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
+    .transform(Number),
+  overtime_hourly_rate: z.string()
+    .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
+    .transform(Number),
+  night_hourly_rate: z.string()
+    .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
+    .transform(Number),
+  holiday_hourly_rate: z.string()
+    .regex(/^\d{1,6}(\.\d{1,2})?$/, 'Formato inválido (máx. 6 dígitos, 2 decimales)')
+    .transform(Number),
+  irpf: z.string()
+    .regex(/^\d{1,2}(\.\d{1,2})?$/, 'Formato inválido (máx. 2 dígitos, 2 decimales)')
+    .transform(Number)
+    .optional(),
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
+
+const Register = () => {
+  const { register, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      company_name: '',
+      email: '',
+      password: '',
+      normal_hourly_rate: '',
+      overtime_hourly_rate: '',
+      night_hourly_rate: '',
+      holiday_hourly_rate: '',
+      irpf: '',
+    },
+  });
+
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const submitData = {
+        ...data,
+        company_name: data.company_name || undefined,
+        irpf: data.irpf || undefined,
+      };
+      await register(submitData);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error en registro:', error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-black py-12 px-4">
+      <div className="max-w-2xl mx-auto">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <Clock className="h-10 w-10 text-teal-400" />
+            <span className="text-2xl font-bold text-white">TimeTracker</span>
+          </div>
+          <h2 className="text-3xl font-bold text-white">Crear Cuenta</h2>
+          <p className="mt-2 text-gray-400">Regístrate para comenzar a gestionar tus horas</p>
+        </div>
+
+        {/* Formulario */}
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-teal-500/20">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-300">Nombre *</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Tu nombre completo"
+                          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="company_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-300">Empresa</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Nombre de tu empresa"
+                          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-300">Email *</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="tu@email.com"
+                          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-300">Contraseña *</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="password"
+                          placeholder="••••••••"
+                          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Tarifas por hora */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium text-white border-b border-teal-500/20 pb-2">
+                  Tarifas por Hora
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="normal_hourly_rate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-300">Tarifa Normal (€/h) *</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="15.00"
+                            className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="overtime_hourly_rate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-300">Tarifa Extra (€/h) *</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="22.50"
+                            className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="night_hourly_rate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-300">Tarifa Nocturna (€/h) *</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="18.00"
+                            className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="holiday_hourly_rate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-gray-300">Tarifa Festivos (€/h) *</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="30.00"
+                            className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400"
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="irpf"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-gray-300">IRPF (%)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="15.00"
+                          className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 focus:border-teal-400 max-w-xs"
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400" />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-teal-500 hover:bg-teal-600 text-black font-semibold"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
+              </Button>
+            </form>
+          </Form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-400">
+              ¿Ya tienes cuenta?{' '}
+              <Link 
+                to="/login" 
+                className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+              >
+                Iniciar Sesión
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
