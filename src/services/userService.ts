@@ -39,7 +39,7 @@ interface ChangePasswordResponse {
 export const userService = {
   async updateEmail(data: UpdateEmailData, token: string): Promise<UpdateEmailResponse> {
     try {
-      return await apiClient.putWithAuth<UpdateEmailResponse>('/api/v1/user/update', data, token);
+      return await apiClient.putWithAuth<UpdateEmailResponse>('/api/user/update', data, token);
     } catch (error) {
       console.error('Update email error:', error);
       
@@ -53,7 +53,7 @@ export const userService = {
 
   async showUser(token: string): Promise<ShowUserResponse> {
     try {
-      return await apiClient.getWithAuth<ShowUserResponse>('/api/v1/user/show', token);
+      return await apiClient.getWithAuth<ShowUserResponse>('/api/user/show', token);
     } catch (error) {
       console.error('Show user error:', error);
       
@@ -67,7 +67,7 @@ export const userService = {
 
   async deleteUser(token: string): Promise<DeleteUserResponse> {
     try {
-      return await apiClient.postWithAuth<DeleteUserResponse>('/api/v1/user/delete', {}, token);
+      return await apiClient.postWithAuth<DeleteUserResponse>('/api/user/delete', {}, token);
     } catch (error) {
       console.error('Delete user error:', error);
       
@@ -81,7 +81,7 @@ export const userService = {
 
   async changePassword(data: ChangePasswordData, token: string): Promise<ChangePasswordResponse> {
     try {
-      return await apiClient.putWithAuth<ChangePasswordResponse>('/api/v1/user/change_password', data, token);
+      return await apiClient.putWithAuth<ChangePasswordResponse>('/api/user/change_password', data, token);
     } catch (error) {
       console.error('Change password error:', error);
       
