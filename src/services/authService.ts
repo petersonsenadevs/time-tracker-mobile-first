@@ -39,7 +39,7 @@ interface DashboardResponse {
 export const authService = {
   async login(data: LoginData): Promise<LoginResponse> {
     try {
-      return await apiClient.post<LoginResponse>('/api/v1/login', data);
+      return await apiClient.post<LoginResponse>('/api/login', data);
     } catch (error) {
       console.error('Login error:', error);
       
@@ -63,7 +63,7 @@ export const authService = {
 
   async register(data: RegisterData): Promise<RegisterResponse> {
     try {
-      return await apiClient.post<RegisterResponse>('/api/v1/register', data);
+      return await apiClient.post<RegisterResponse>('/api/register', data);
     } catch (error) {
       console.error('Register error:', error);
       
