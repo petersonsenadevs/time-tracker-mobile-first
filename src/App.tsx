@@ -20,7 +20,10 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto mb-4"></div>
+          <p className="text-gray-300">Verificando sesión...</p>
+        </div>
       </div>
     );
   }
@@ -32,6 +35,39 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const AppRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route 
+        path="/login" 
+        element={
+          <AuthenticatedRedirect>
+            <Login />
+          </AuthenticatedRedirect>
+        } 
+      />
+      <Route 
+        path="/register" 
+        element={
+          <AuthenticatedRedirect>
+            <Register />
+          </AuthenticatedRedirect>
+        } 
+      />
+      <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -39,35 +75,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route 
-              path="/login" 
-              element={
-                <AuthenticatedRedirect>
-                  <Login />
-                </AuthenticatedRedirect>
-              } 
-            />
-            <Route 
-              path="/register" 
-              element={
-                <AuthenticatedRedirect>
-                  <Register />
-                </AuthenticatedRedirect>
-              } 
-            />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>

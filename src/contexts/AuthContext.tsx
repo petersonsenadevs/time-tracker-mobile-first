@@ -40,7 +40,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(!!localStorage.getItem('token'));
   const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
@@ -48,12 +48,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return await authService.login(data);
     },
     onSuccess: async (data) => {
+      console.log('Login successful, setting token:', data.token);
       setToken(data.token);
       localStorage.setItem('token', data.token);
       
       // Verificar inmediatamente el token y obtener datos del usuario
       try {
         const dashboardData = await authService.verifyDashboardAccess(data.token);
+        console.log('Dashboard data received:', dashboardData);
         setUser(dashboardData.user);
         toast.success('Sesión iniciada correctamente');
       } catch (error) {
@@ -65,6 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     },
     onError: (error) => {
+      console.error('Login error:', error);
       toast.error(error.message);
     },
   });
@@ -101,11 +104,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const checkAuthStatus = async () => {
-    if (!token) return;
+    if (!token) {
+      setIsCheckingAuth(false);
+      return;
+    }
     
+    console.log('Checking auth status with token:', token);
     setIsCheckingAuth(true);
     try {
       const dashboardData = await authService.verifyDashboardAccess(token);
+      console.log('Auth verification successful:', dashboardData);
       setUser(dashboardData.user);
     } catch (error) {
       console.error('Auth verification failed:', error);
@@ -116,12 +124,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    if (token) {
-      checkAuthStatus();
-    }
+    checkAuthStatus();
   }, [token]);
 
   const logout = () => {
+    console.log('Logging out user');
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
