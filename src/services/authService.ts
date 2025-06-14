@@ -54,8 +54,8 @@ interface DashboardResponse {
 
 // Tipo para la respuesta actual (para compatibilidad)
 interface LegacyDashboardResponse {
-  total_hours_worked: number;
-  current_month_salary: number;
+  total_hours_worked: string; // Formato "H:M" como "0:0"
+  current_month_salary: string; // Formato "0.00"
   user?: {
     id: number;
     name: string;
@@ -63,6 +63,19 @@ interface LegacyDashboardResponse {
     company_name?: string;
   };
 }
+
+// Función auxiliar para convertir formato "H:M" a decimal de horas
+const convertTimeToHours = (timeString: string): number => {
+  if (!timeString || typeof timeString !== 'string') return 0;
+  
+  const parts = timeString.split(':');
+  if (parts.length !== 2) return 0;
+  
+  const hours = parseInt(parts[0]) || 0;
+  const minutes = parseInt(parts[1]) || 0;
+  
+  return hours + (minutes / 60);
+};
 
 export const authService = {
   async login(data: LoginData): Promise<LoginResponse> {
@@ -122,11 +135,25 @@ export const authService = {
       
       // Si es la respuesta legacy, convertirla al nuevo formato
       const legacyResponse = response as LegacyDashboardResponse;
+      
+      // Convertir el formato de tiempo "H:M" a decimal de horas
+      const totalHoursWorked = convertTimeToHours(legacyResponse.total_hours_worked);
+      
+      // Convertir el salario string a number
+      const currentMonthSalary = parseFloat(legacyResponse.current_month_salary) || 0;
+      
+      console.log('Converted legacy data:', {
+        totalHoursWorked,
+        currentMonthSalary,
+        originalTime: legacyResponse.total_hours_worked,
+        originalSalary: legacyResponse.current_month_salary
+      });
+      
       return {
         message: "Dashboard retrieved successfully",
         dashboardData: {
-          totalHoursWorked: legacyResponse.total_hours_worked || 0,
-          currentMonthSalary: legacyResponse.current_month_salary || 0,
+          totalHoursWorked,
+          currentMonthSalary,
           dailyWorkHours: []
         },
         user: legacyResponse.user
