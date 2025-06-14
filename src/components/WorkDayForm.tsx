@@ -37,7 +37,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
   const form = useForm<WorkDayFormData>({
     resolver: zodResolver(workDaySchema),
     defaultValues: {
-      date: format(selectedDate, 'yyyy-MM-dd'), // Formato americano
+      date: format(selectedDate, 'yyyy-MM-dd'),
       startTime: '',
       endTime: '',
       plannedHours: '8',
@@ -53,6 +53,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
   const registerHourSessionMutation = useMutation({
     mutationFn: async (data: HourSessionData) => {
       if (!token) throw new Error('No hay token de autenticación');
+      console.log('Sending to API:', data);
       return await hourSessionService.registerHourSession(data, token);
     },
     onSuccess: () => {
@@ -73,6 +74,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
               'start_time': 'startTime',
               'end_time': 'endTime',
               'planned_hours': 'plannedHours',
+              'work_type': 'workType',
             };
             
             const formField = fieldMap[field] as keyof WorkDayFormData;
@@ -91,6 +93,8 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
   });
 
   const handleSubmit = (data: WorkDayFormData) => {
+    console.log('Form data submitted:', data);
+    
     // Validar que planned_hours sea al menos 2
     const plannedHoursNum = parseInt(data.plannedHours);
     if (plannedHoursNum < 2) {
@@ -101,15 +105,16 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
       return;
     }
 
+    // Formatear datos exactamente como los espera la API
     const hourSessionData: HourSessionData = {
-      date: data.date, // Ya está en formato americano
-      start_time: data.startTime,
-      end_time: data.endTime,
-      planned_hours: plannedHoursNum,
-      work_type: data.workType || undefined,
+      date: data.date, // Formato YYYY-MM-DD
+      start_time: data.startTime, // Formato H:i (ej: "09:00")
+      end_time: data.endTime, // Formato H:i (ej: "17:00")
+      planned_hours: plannedHoursNum, // Entero, mínimo 2
+      work_type: data.workType || undefined, // String opcional
     };
 
-    console.log('Submitting hour session:', hourSessionData);
+    console.log('Formatted data for API:', hourSessionData);
     registerHourSessionMutation.mutate(hourSessionData);
     
     // También llamar al callback original por compatibilidad
@@ -143,14 +148,20 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
         <div className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-              {/* Campo de fecha (oculto pero presente para validación) */}
+              {/* Campo de fecha (visible para debugging) */}
               <FormField
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem className="hidden">
+                  <FormItem>
+                    <FormLabel className="text-gray-300">Fecha</FormLabel>
                     <FormControl>
-                      <Input {...field} type="hidden" />
+                      <Input
+                        {...field}
+                        type="date"
+                        className="bg-gray-800 border-gray-700 text-white focus:border-teal-400"
+                        readOnly
+                      />
                     </FormControl>
                     <FormMessage className="text-red-400" />
                   </FormItem>
@@ -172,6 +183,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
                           {...field}
                           type="time"
                           className="bg-gray-800 border-gray-700 text-white focus:border-teal-400"
+                          placeholder="09:00"
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />
@@ -193,6 +205,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
                           {...field}
                           type="time"
                           className="bg-gray-800 border-gray-700 text-white focus:border-teal-400"
+                          placeholder="17:00"
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />
@@ -206,7 +219,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
                 name="plannedHours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-gray-300">Horas Planificadas</FormLabel>
+                    <FormLabel className="text-gray-300">Horas Planificadas (mínimo 2)</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
