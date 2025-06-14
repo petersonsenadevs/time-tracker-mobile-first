@@ -1,17 +1,22 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { User, MapPin, Clock, Calendar, Award, Phone, Mail, DollarSign, Building, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, MapPin, Clock, Calendar, Award, Phone, Mail, DollarSign, Building, ChevronLeft, ChevronRight, Edit } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { useState } from 'react';
+import EditEmployeeForm from '@/components/profile/EditEmployeeForm';
+import { useToast } from '@/hooks/use-toast';
 
 const Profile = () => {
   const { token } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Obtener información del empleado desde la API
   const { data: employeeInfo, refetch: refetchEmployee, isLoading: isLoadingEmployee } = useQuery({
@@ -26,6 +31,30 @@ const Profile = () => {
     queryFn: () => userService.showUser(token!),
     enabled: !!token,
   });
+
+  // Mutación para actualizar empleado
+  const updateEmployeeMutation = useMutation({
+    mutationFn: (data: any) => userService.updateEmployee(data, token!),
+    onSuccess: (response) => {
+      toast({
+        title: "¡Éxito!",
+        description: "Información del empleado actualizada correctamente",
+      });
+      setIsEditing(false);
+      queryClient.invalidateQueries({ queryKey: ['employee', token] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Error al actualizar la información del empleado",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveEmployee = (data: any) => {
+    updateEmployeeMutation.mutate(data);
+  };
 
   const isLoading = isLoadingEmployee || isLoadingUser;
   const employee = employeeInfo?.employee;
@@ -56,11 +85,18 @@ const Profile = () => {
   }
 
   const slides = [
-    // Slide 1: Header + Personal Info
+    // Slide 1: Header + Personal Info (con opción de editar)
     {
       id: 'personal',
       title: 'Información Personal',
-      content: (
+      content: isEditing ? (
+        <EditEmployeeForm
+          employee={employee}
+          onSave={handleSaveEmployee}
+          onCancel={() => setIsEditing(false)}
+          isLoading={updateEmployeeMutation.isPending}
+        />
+      ) : (
         <div className="space-y-6">
           {/* Header del Empleado */}
           <div className="bg-gradient-to-r from-teal-500/20 to-blue-500/20 rounded-xl p-6">
@@ -84,10 +120,18 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="text-center">
+              <div className="flex flex-col items-center gap-2">
                 <div className="bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-medium">
                   ● Activo
                 </div>
+                <Button
+                  onClick={() => setIsEditing(true)}
+                  size="sm"
+                  className="bg-teal-500 hover:bg-teal-600 text-black"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  Editar
+                </Button>
               </div>
             </div>
           </div>

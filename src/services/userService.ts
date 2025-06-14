@@ -1,4 +1,3 @@
-
 import { apiClient } from './api';
 
 export interface UpdateEmailData {
@@ -27,6 +26,15 @@ export interface Employee {
   irpf: number;
 }
 
+export interface UpdateEmployeeData {
+  name?: string;
+  company_name?: string;
+  normal_hourly_rate?: string;
+  overtime_hourly_rate?: string;
+  holiday_hourly_rate?: string;
+  irpf?: number;
+}
+
 interface UpdateEmailResponse {
   message: string;
   user: User;
@@ -46,6 +54,11 @@ interface ChangePasswordResponse {
 }
 
 interface EmployeeResponse {
+  employee: Employee;
+}
+
+interface UpdateEmployeeResponse {
+  message: string;
   employee: Employee;
 }
 
@@ -121,6 +134,20 @@ export const userService = {
       }
       
       throw new Error('Error al cambiar la contraseña');
+    }
+  },
+
+  async updateEmployee(data: UpdateEmployeeData, token: string): Promise<UpdateEmployeeResponse> {
+    try {
+      return await apiClient.putWithAuth<UpdateEmployeeResponse>('/api/employee', data, token);
+    } catch (error) {
+      console.error('Update employee error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('Error al actualizar información del empleado');
     }
   }
 };
