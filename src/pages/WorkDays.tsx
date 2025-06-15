@@ -11,6 +11,7 @@ import EditWorkSessionForm from '@/components/EditWorkSessionForm';
 import WorkDaysSearch from '@/components/workdays/WorkDaysSearch';
 import WorkSessionCard from '@/components/workdays/WorkSessionCard';
 import { LoadingState, ErrorState, EmptyState } from '@/components/workdays/WorkDaysStates';
+import ConfirmationDialog from '@/components/ui/confirmation-dialog';
 import { toast } from '@/components/ui/use-toast';
 
 const WorkDays = () => {
@@ -18,6 +19,7 @@ const WorkDays = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null);
+  const [sessionToDelete, setSessionToDelete] = useState<WorkSession | null>(null);
   const queryClient = useQueryClient();
 
   const { data: workSessionData, isLoading, error } = useQuery({
@@ -64,9 +66,18 @@ const WorkDays = () => {
   };
 
   const handleDeleteSession = (session: WorkSession) => {
-    if (confirm('¿Estás seguro de que quieres eliminar esta jornada?')) {
-      deleteSessionMutation.mutate(session.date);
+    setSessionToDelete(session);
+  };
+
+  const confirmDeleteSession = () => {
+    if (sessionToDelete) {
+      deleteSessionMutation.mutate(sessionToDelete.date);
+      setSessionToDelete(null);
     }
+  };
+
+  const cancelDeleteSession = () => {
+    setSessionToDelete(null);
   };
 
   return (
@@ -125,6 +136,17 @@ const WorkDays = () => {
           onClose={() => setEditingSession(null)}
         />
       )}
+
+      <ConfirmationDialog
+        isOpen={!!sessionToDelete}
+        onClose={cancelDeleteSession}
+        onConfirm={confirmDeleteSession}
+        title="Eliminar Jornada"
+        description="¿Estás seguro de que quieres eliminar esta jornada? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        variant="destructive"
+      />
     </div>
   );
 };
