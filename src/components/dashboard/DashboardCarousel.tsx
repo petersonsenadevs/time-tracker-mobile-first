@@ -9,6 +9,7 @@ interface DashboardStats {
   totalHoursWorked?: number;
   dailyWorkHours?: any[];
   currentMonthSalary?: number;
+  countHourSessionDay?: number;
 }
 
 interface DashboardCarouselProps {
@@ -54,7 +55,10 @@ const DashboardCarousel = ({
       id: 'stats',
       title: 'Estadísticas',
       content: (
-        <StatisticsCard employee={employee} />
+        <StatisticsCard 
+          employee={employee} 
+          dashboardStats={dashboardStats}
+        />
       )
     }
   ];
