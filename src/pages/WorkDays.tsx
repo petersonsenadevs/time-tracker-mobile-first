@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
@@ -6,15 +5,17 @@ import { workSessionService, WorkSession } from '@/services/workSessionService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Clock, Search, Calendar as CalendarIcon, AlertCircle, Timer, Briefcase } from 'lucide-react';
+import { Clock, Search, Calendar as CalendarIcon, AlertCircle, Timer, Briefcase, Pencil } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import BottomNavBar from '@/components/BottomNavBar';
+import EditWorkSessionForm from '@/components/EditWorkSessionForm';
 
 const WorkDays = () => {
   const { token } = useAuth();
   const [searchDate, setSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [editingSession, setEditingSession] = useState<WorkSession | null>(null);
 
   const { data: workSessionData, isLoading, error } = useQuery({
     queryKey: ['workSessions', currentSearchDate, token],
@@ -168,8 +169,18 @@ const WorkDays = () => {
                         <Briefcase className="h-5 w-5 text-teal-400" />
                         Jornada {index + 1}
                       </div>
-                      <div className="text-lg font-bold text-teal-400">
-                        {getTotalHours(session).toFixed(1)}h total
+                      <div className="flex items-center gap-3">
+                        <div className="text-lg font-bold text-teal-400">
+                          {getTotalHours(session).toFixed(1)}h total
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingSession(session)}
+                          className="text-gray-400 hover:text-teal-400 h-8 w-8 p-0"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
                       </div>
                     </CardTitle>
                   </CardHeader>
@@ -249,6 +260,15 @@ const WorkDays = () => {
       </div>
 
       <BottomNavBar />
+
+      {/* Edit Form Modal */}
+      {editingSession && (
+        <EditWorkSessionForm
+          session={editingSession}
+          isOpen={!!editingSession}
+          onClose={() => setEditingSession(null)}
+        />
+      )}
     </div>
   );
 };
