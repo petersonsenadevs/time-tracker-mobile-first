@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -144,12 +145,12 @@ const Dashboard = () => {
               </div>
             ) : employee ? (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex items-center gap-3 p-4 bg-gray-800/50 rounded-lg">
                     <Clock className="h-6 w-6 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-400">Tarifa Normal por Hora</p>
-                      <p className="text-white font-bold text-xl">€{employee.normal_hourly_rate}</p>
+                      <p className="text-white font-bold text-2xl">€{employee.normal_hourly_rate}</p>
                     </div>
                   </div>
                   
@@ -157,15 +158,7 @@ const Dashboard = () => {
                     <Clock className="h-6 w-6 text-orange-400" />
                     <div>
                       <p className="text-sm text-gray-400">Tarifa de Horas Extra</p>
-                      <p className="text-white font-bold text-xl">€{employee.overtime_hourly_rate}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 p-4 bg-gray-800/50 rounded-lg">
-                    <Clock className="h-6 w-6 text-purple-400" />
-                    <div>
-                      <p className="text-sm text-gray-400">Tarifa Nocturna</p>
-                      <p className="text-white font-bold text-xl">€{employee.night_hourly_rate}</p>
+                      <p className="text-white font-bold text-2xl">€{employee.overtime_hourly_rate}</p>
                     </div>
                   </div>
 
@@ -173,15 +166,15 @@ const Dashboard = () => {
                     <CalendarDays className="h-6 w-6 text-green-400" />
                     <div>
                       <p className="text-sm text-gray-400">Tarifa de Días Festivos</p>
-                      <p className="text-white font-bold text-xl">€{employee.holiday_hourly_rate}</p>
+                      <p className="text-white font-bold text-2xl">€{employee.holiday_hourly_rate}</p>
                     </div>
                   </div>
 
-                  <div className="md:col-span-2 flex items-center gap-3 p-4 bg-gray-800/50 rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-gray-800/50 rounded-lg">
                     <DollarSign className="h-6 w-6 text-red-400" />
                     <div>
                       <p className="text-sm text-gray-400">IRPF (%)</p>
-                      <p className="text-white font-bold text-xl">{employee.irpf}%</p>
+                      <p className="text-white font-bold text-2xl">{employee.irpf}%</p>
                     </div>
                   </div>
                 </div>
@@ -191,7 +184,6 @@ const Dashboard = () => {
                   <div className="text-sm text-gray-300 space-y-1">
                     <p>• Horario normal: Lunes a Viernes, 8:00 AM - 6:00 PM</p>
                     <p>• Horas extra: Después de 8 horas diarias o fines de semana</p>
-                    <p>• Horario nocturno: De 10:00 PM a 6:00 AM</p>
                     <p>• Días festivos: Días oficiales no laborables</p>
                   </div>
                 </div>

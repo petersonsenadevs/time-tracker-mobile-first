@@ -20,7 +20,6 @@ const EditEmployeeForm = ({ employee, onSave, onCancel, isLoading = false }: Edi
     company_name: employee.company_name || '',
     normal_hourly_rate: employee.normal_hourly_rate || '',
     overtime_hourly_rate: employee.overtime_hourly_rate || '',
-    night_hourly_rate: employee.night_hourly_rate || '',
     holiday_hourly_rate: employee.holiday_hourly_rate || '',
     irpf: employee.irpf || 0
   });
@@ -105,21 +104,6 @@ const EditEmployeeForm = ({ employee, onSave, onCancel, isLoading = false }: Edi
             </div>
 
             <div>
-              <Label htmlFor="night_rate" className="text-gray-300">Tarifa Nocturna (€/h)</Label>
-              <Input
-                id="night_rate"
-                type="number"
-                step="0.01"
-                min="0"
-                max="999999.99"
-                value={formData.night_hourly_rate}
-                onChange={(e) => handleChange('night_hourly_rate', e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white"
-                placeholder="12.50"
-              />
-            </div>
-
-            <div>
               <Label htmlFor="holiday_rate" className="text-gray-300">Tarifa Días Festivos (€/h)</Label>
               <Input
                 id="holiday_rate"
@@ -134,7 +118,7 @@ const EditEmployeeForm = ({ employee, onSave, onCancel, isLoading = false }: Edi
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div>
               <Label htmlFor="irpf" className="text-gray-300">IRPF (%)</Label>
               <Input
                 id="irpf"
