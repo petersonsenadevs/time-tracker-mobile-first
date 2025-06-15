@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
@@ -10,7 +9,8 @@ import WelcomeSection from '@/components/dashboard/WelcomeSection';
 import StatsCards from '@/components/dashboard/StatsCards';
 import DashboardCarousel from '@/components/dashboard/DashboardCarousel';
 import WorkDayForm from '@/components/WorkDayForm';
-import { useState } from 'react';
+import OnboardingModal from '@/components/OnboardingModal';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 const Dashboard = () => {
@@ -18,10 +18,22 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isWorkDayFormOpen, setIsWorkDayFormOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const queryClient = useQueryClient();
 
   console.log('Dashboard - dashboardStats:', dashboardStats);
   console.log('Dashboard - countHourSessionDay específicamente:', dashboardStats?.countHourSessionDay);
+
+  // Verificar si el usuario ya vio el onboarding
+  useEffect(() => {
+    const onboardingCompleted = localStorage.getItem('onboarding-completed');
+    if (!onboardingCompleted && user) {
+      // Mostrar el modal después de un pequeño delay para que se cargue completamente el dashboard
+      setTimeout(() => {
+        setShowOnboarding(true);
+      }, 1000);
+    }
+  }, [user]);
 
   const { data: userInfo } = useQuery({
     queryKey: ['user', token],
@@ -85,6 +97,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
       <AppHeader 
@@ -124,6 +140,11 @@ const Dashboard = () => {
         isOpen={isWorkDayFormOpen}
         onClose={handleCloseWorkDayForm}
         onSubmit={handleWorkDaySubmit}
+      />
+
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={handleCloseOnboarding}
       />
 
       <BottomNavBar />
