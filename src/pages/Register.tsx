@@ -117,49 +117,55 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <RegisterHeader />
-        <RegisterProgress currentStep={currentStep} />
+    <div className="h-screen bg-black flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full px-4 py-4 sm:py-6">
+        <div className="flex-shrink-0">
+          <RegisterHeader />
+          <RegisterProgress currentStep={currentStep} />
+        </div>
 
         {/* Formulario con Carrusel */}
-        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-teal-500/20">
+        <div className="flex-1 bg-gray-900/50 backdrop-blur-sm rounded-xl border border-teal-500/20 flex flex-col min-h-0">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {/* Página 1: Información Personal */}
-                  <CarouselItem className={currentStep === 0 ? 'block' : 'hidden'}>
-                    <PersonalInfoStep control={form.control} isLoading={isLoading} />
-                  </CarouselItem>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
+              <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                <Carousel className="w-full h-full">
+                  <CarouselContent>
+                    {/* Página 1: Información Personal */}
+                    <CarouselItem className={currentStep === 0 ? 'block' : 'hidden'}>
+                      <PersonalInfoStep control={form.control} isLoading={isLoading} />
+                    </CarouselItem>
 
-                  {/* Página 2: Tarifas y Configuración */}
-                  <CarouselItem className={currentStep === 1 ? 'block' : 'hidden'}>
-                    <RatesConfigStep control={form.control} isLoading={isLoading} />
-                  </CarouselItem>
-                </CarouselContent>
-              </Carousel>
+                    {/* Página 2: Tarifas y Configuración */}
+                    <CarouselItem className={currentStep === 1 ? 'block' : 'hidden'}>
+                      <RatesConfigStep control={form.control} isLoading={isLoading} />
+                    </CarouselItem>
+                  </CarouselContent>
+                </Carousel>
+              </div>
 
-              <RegisterNavigation
-                currentStep={currentStep}
-                isLoading={isLoading}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-              />
+              <div className="flex-shrink-0 px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6 lg:pb-8">
+                <RegisterNavigation
+                  currentStep={currentStep}
+                  isLoading={isLoading}
+                  onPrevious={handlePrevious}
+                  onNext={handleNext}
+                />
+
+                <div className="mt-4 sm:mt-6 text-center">
+                  <p className="text-gray-400 text-sm">
+                    ¿Ya tienes cuenta?{' '}
+                    <Link 
+                      to="/login" 
+                      className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+                    >
+                      Iniciar Sesión
+                    </Link>
+                  </p>
+                </div>
+              </div>
             </form>
           </Form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-400">
-              ¿Ya tienes cuenta?{' '}
-              <Link 
-                to="/login" 
-                className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
-              >
-                Iniciar Sesión
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
