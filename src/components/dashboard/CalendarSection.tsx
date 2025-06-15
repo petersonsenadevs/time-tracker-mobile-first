@@ -2,8 +2,10 @@
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { es } from 'date-fns/locale';
+import { format, isToday } from 'date-fns';
+import { useState } from 'react';
 
 interface CalendarSectionProps {
   selectedDate: Date;
@@ -12,6 +14,8 @@ interface CalendarSectionProps {
 }
 
 const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarSectionProps) => {
+  const [month, setMonth] = useState<Date>(selectedDate);
+
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       // Solo permitir fechas hasta hoy
@@ -25,11 +29,49 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
     }
   };
 
+  const goToToday = () => {
+    const today = new Date();
+    setMonth(today);
+    onDateSelect(today);
+  };
+
+  const handlePreviousMonth = () => {
+    const newMonth = new Date(month);
+    newMonth.setMonth(newMonth.getMonth() - 1);
+    setMonth(newMonth);
+  };
+
+  const handleNextMonth = () => {
+    const newMonth = new Date(month);
+    newMonth.setMonth(newMonth.getMonth() + 1);
+    setMonth(newMonth);
+  };
+
+  const canGoNext = () => {
+    const nextMonth = new Date(month);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const today = new Date();
+    return nextMonth.getFullYear() <= today.getFullYear() && 
+           (nextMonth.getFullYear() < today.getFullYear() || nextMonth.getMonth() <= today.getMonth());
+  };
+
   return (
     <Card className="bg-gray-900/50 border-gray-700">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col space-y-4">
-          <div className="flex justify-end">
+          <div className="flex justify-between items-center">
+            <Button
+              size="sm"
+              variant="outline"
+              className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              onClick={goToToday}
+              disabled={isToday(selectedDate)}
+              aria-label="Ir a fecha actual"
+            >
+              <CalendarDays className="h-4 w-4 mr-2" />
+              Hoy
+            </Button>
+            
             <Button
               size="sm"
               className="bg-teal-500 hover:bg-teal-600 text-black font-medium transition-colors"
@@ -40,12 +82,42 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
               Nueva Jornada
             </Button>
           </div>
+
+          {/* Navegación personalizada para móviles */}
+          <div className="flex items-center justify-between px-2 py-3 bg-gray-800/50 rounded-lg">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handlePreviousMonth}
+              className="text-gray-300 hover:text-white hover:bg-gray-700 p-2"
+              aria-label="Mes anterior"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            
+            <h3 className="text-white font-semibold text-lg capitalize">
+              {format(month, "MMMM yyyy", { locale: es })}
+            </h3>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleNextMonth}
+              disabled={!canGoNext()}
+              className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 disabled:opacity-30 disabled:cursor-not-allowed"
+              aria-label="Mes siguiente"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
           
           <div className="flex justify-center w-full">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={handleDateSelect}
+              month={month}
+              onMonthChange={setMonth}
               locale={es}
               disabled={(date) => {
                 const today = new Date();
@@ -56,51 +128,21 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
               classNames={{
                 months: "flex w-full justify-center",
                 month: "space-y-4 w-full",
-                caption: "flex justify-center pt-1 relative items-center mb-4",
-                caption_label: "text-white text-lg font-semibold",
-                nav: "space-x-1 flex items-center",
-                nav_button: "text-gray-400 hover:text-white hover:bg-gray-700 h-8 w-8 bg-transparent p-0 opacity-70 hover:opacity-100 transition-all duration-200 rounded-md",
-                nav_button_previous: "absolute left-1",
-                nav_button_next: "absolute right-1",
+                caption: "hidden", // Ocultamos la navegación por defecto
+                nav: "hidden", // Ocultamos la navegación por defecto
                 table: "w-full border-collapse space-y-1",
                 head_row: "flex w-full",
-                head_cell: "text-gray-400 rounded-md w-full font-medium text-sm py-2 text-center",
-                row: "flex w-full mt-2",
-                cell: "relative w-full h-12 text-center text-sm p-0 focus-within:relative focus-within:z-20",
-                day: "h-12 w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-md flex items-center justify-center cursor-pointer",
+                head_cell: "text-gray-400 rounded-md w-full font-medium text-sm py-3 text-center",
+                row: "flex w-full mt-1",
+                cell: "relative w-full h-12 sm:h-14 text-center text-sm p-1 focus-within:relative focus-within:z-20",
+                day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg flex items-center justify-center cursor-pointer text-base sm:text-lg active:scale-95",
                 day_range_end: "day-range-end",
-                day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-semibold",
-                day_today: "bg-gray-700 text-white font-semibold border border-gray-500",
-                day_outside: "text-gray-600 opacity-50 aria-selected:bg-gray-800 aria-selected:text-gray-400 aria-selected:opacity-30",
-                day_disabled: "text-gray-600 opacity-30 cursor-not-allowed",
+                day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-bold shadow-lg scale-105",
+                day_today: "bg-gray-700 text-white font-bold border-2 border-gray-500 shadow-md",
+                day_outside: "text-gray-600 opacity-40 aria-selected:bg-gray-800 aria-selected:text-gray-400 aria-selected:opacity-30",
+                day_disabled: "text-gray-600 opacity-20 cursor-not-allowed",
                 day_range_middle: "aria-selected:bg-gray-700 aria-selected:text-white",
                 day_hidden: "invisible",
-              }}
-              components={{
-                IconLeft: ({ ...props }) => (
-                  <svg
-                    {...props}
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                ),
-                IconRight: ({ ...props }) => (
-                  <svg
-                    {...props}
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                ),
               }}
               aria-label="Calendario para seleccionar fecha de jornada laboral"
             />
