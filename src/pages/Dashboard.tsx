@@ -10,9 +10,11 @@ import CalendarSection from '@/components/dashboard/CalendarSection';
 import SalaryInfoCard from '@/components/dashboard/SalaryInfoCard';
 import StatisticsCard from '@/components/dashboard/StatisticsCard';
 import DashboardCarousel from '@/components/dashboard/DashboardCarousel';
+import { useState } from 'react';
 
 const Dashboard = () => {
   const { user, token, logout, dashboardStats } = useAuth();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const { data: userInfo } = useQuery({
     queryKey: ['user', token],
@@ -20,7 +22,7 @@ const Dashboard = () => {
     enabled: !!token,
   });
 
-  const { data: employeeInfo } = useQuery({
+  const { data: employeeInfo, isLoading: isLoadingEmployee } = useQuery({
     queryKey: ['employee', token],
     queryFn: () => userService.getEmployee(token!),
     enabled: !!token,
@@ -28,6 +30,10 @@ const Dashboard = () => {
 
   const currentUser = userInfo?.user;
   const employee = employeeInfo?.employee;
+
+  const handleNewWorkDay = () => {
+    console.log('Nueva jornada de trabajo');
+  };
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -43,11 +49,14 @@ const Dashboard = () => {
         
         <StatsCards dashboardStats={dashboardStats} />
         
-        <DashboardCarousel>
-          <CalendarSection />
-          <SalaryInfoCard employee={employee} />
-          <StatisticsCard dashboardStats={dashboardStats} />
-        </DashboardCarousel>
+        <DashboardCarousel
+          dashboardStats={dashboardStats}
+          employee={employee}
+          isLoadingEmployee={isLoadingEmployee}
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+          onNewWorkDay={handleNewWorkDay}
+        />
       </div>
 
       <BottomNavBar />
