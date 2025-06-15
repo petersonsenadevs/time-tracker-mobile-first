@@ -6,9 +6,10 @@ import { DayReport } from '@/services/reportService';
 
 interface DailyBreakdownProps {
   hourWorkedData: Record<string, DayReport>;
+  hasData?: boolean;
 }
 
-const DailyBreakdown = ({ hourWorkedData }: DailyBreakdownProps) => {
+const DailyBreakdown = ({ hourWorkedData, hasData = true }: DailyBreakdownProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { 
@@ -27,6 +28,19 @@ const DailyBreakdown = ({ hourWorkedData }: DailyBreakdownProps) => {
     new Date(a[1].date).getTime() - new Date(b[1].date).getTime()
   );
 
+  const textColorClass = hasData ? 'text-white' : 'text-gray-500';
+  const cellColorClasses = hasData ? {
+    normal: 'text-blue-400',
+    overtime: 'text-orange-400',
+    holiday: 'text-green-400',
+    night: 'text-purple-400'
+  } : {
+    normal: 'text-gray-500',
+    overtime: 'text-gray-500',
+    holiday: 'text-gray-500',
+    night: 'text-gray-500'
+  };
+
   return (
     <Card className="bg-gray-900/50 border-gray-700">
       <CardHeader>
@@ -36,40 +50,46 @@ const DailyBreakdown = ({ hourWorkedData }: DailyBreakdownProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-gray-700">
-                <TableHead className="text-gray-300">Fecha</TableHead>
-                <TableHead className="text-gray-300">Normal</TableHead>
-                <TableHead className="text-gray-300">Extra</TableHead>
-                <TableHead className="text-gray-300">Festivo</TableHead>
-                <TableHead className="text-gray-300">Nocturno</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedEntries.map(([key, dayData]) => (
-                <TableRow key={key} className="border-gray-700">
-                  <TableCell className="text-white font-medium">
-                    {formatDate(dayData.date)}
-                  </TableCell>
-                  <TableCell className="text-blue-400">
-                    {formatHours(dayData.normal_hours.hours, dayData.normal_hours.minutes)}
-                  </TableCell>
-                  <TableCell className="text-orange-400">
-                    {formatHours(dayData.overtime_hours.hours, dayData.overtime_hours.minutes)}
-                  </TableCell>
-                  <TableCell className="text-green-400">
-                    {formatHours(dayData.holiday_hours.hours, dayData.holiday_hours.minutes)}
-                  </TableCell>
-                  <TableCell className="text-purple-400">
-                    {formatHours(dayData.night_hours.hours, dayData.night_hours.minutes)}
-                  </TableCell>
+        {sortedEntries.length === 0 ? (
+          <div className="p-6 text-center">
+            <p className="text-gray-400">No hay registros de trabajo para este período</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-700">
+                  <TableHead className="text-gray-300">Fecha</TableHead>
+                  <TableHead className="text-gray-300">Normal</TableHead>
+                  <TableHead className="text-gray-300">Extra</TableHead>
+                  <TableHead className="text-gray-300">Festivo</TableHead>
+                  <TableHead className="text-gray-300">Nocturno</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {sortedEntries.map(([key, dayData]) => (
+                  <TableRow key={key} className="border-gray-700">
+                    <TableCell className={`${textColorClass} font-medium`}>
+                      {formatDate(dayData.date)}
+                    </TableCell>
+                    <TableCell className={cellColorClasses.normal}>
+                      {formatHours(dayData.normal_hours.hours, dayData.normal_hours.minutes)}
+                    </TableCell>
+                    <TableCell className={cellColorClasses.overtime}>
+                      {formatHours(dayData.overtime_hours.hours, dayData.overtime_hours.minutes)}
+                    </TableCell>
+                    <TableCell className={cellColorClasses.holiday}>
+                      {formatHours(dayData.holiday_hours.hours, dayData.holiday_hours.minutes)}
+                    </TableCell>
+                    <TableCell className={cellColorClasses.night}>
+                      {formatHours(dayData.night_hours.hours, dayData.night_hours.minutes)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

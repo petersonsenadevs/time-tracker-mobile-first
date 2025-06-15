@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { reportService } from '@/services/reportService';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
 import StatisticsHeader from '@/components/statistics/StatisticsHeader';
 import MonthYearSelector from '@/components/statistics/MonthYearSelector';
@@ -49,6 +51,11 @@ const Statistics = () => {
     );
   }
 
+  const monthNames = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <StatisticsHeader />
@@ -58,13 +65,24 @@ const Statistics = () => {
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
           onMonthYearChange={handleMonthYearChange}
+          isLoading={isLoading}
         />
+
+        {reportData && !reportData.hasData && (
+          <Alert className="bg-gray-900/50 border-yellow-600 border">
+            <AlertTriangle className="h-4 w-4 text-yellow-400" />
+            <AlertDescription className="text-yellow-200">
+              No hay datos disponibles para {monthNames[selectedMonth - 1]} de {selectedYear}. 
+              Los valores se muestran en cero.
+            </AlertDescription>
+          </Alert>
+        )}
 
         {reportData && (
           <>
             <ReportSummary reportData={reportData} />
-            <SalaryInfo salary={reportData.salary} />
-            <DailyBreakdown hourWorkedData={reportData.hourWorkedData} />
+            <SalaryInfo salary={reportData.salary} hasData={reportData.hasData} />
+            <DailyBreakdown hourWorkedData={reportData.hourWorkedData} hasData={reportData.hasData} />
           </>
         )}
       </div>

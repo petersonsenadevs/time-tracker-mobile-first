@@ -5,9 +5,10 @@ import { SalaryData } from '@/services/reportService';
 
 interface SalaryInfoProps {
   salary: SalaryData;
+  hasData?: boolean;
 }
 
-const SalaryInfo = ({ salary }: SalaryInfoProps) => {
+const SalaryInfo = ({ salary, hasData = true }: SalaryInfoProps) => {
   return (
     <Card className="bg-gray-900/50 border-gray-700">
       <CardHeader>
@@ -19,32 +20,48 @@ const SalaryInfo = ({ salary }: SalaryInfoProps) => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 bg-gray-800/50 rounded-lg">
+            <div className={`flex justify-between items-center p-3 rounded-lg ${
+              hasData ? 'bg-gray-800/50' : 'bg-gray-800/30'
+            }`}>
               <span className="text-gray-400">Salario Bruto</span>
-              <span className="text-white font-semibold">€{salary.total_gross_salary}</span>
+              <span className={`font-semibold ${hasData ? 'text-white' : 'text-gray-500'}`}>
+                €{salary.total_gross_salary}
+              </span>
             </div>
-            <div className="flex justify-between items-center p-3 bg-gray-800/50 rounded-lg">
+            <div className={`flex justify-between items-center p-3 rounded-lg ${
+              hasData ? 'bg-gray-800/50' : 'bg-gray-800/30'
+            }`}>
               <span className="text-gray-400">Salario Neto</span>
-              <span className="text-green-400 font-semibold">€{salary.total_net_salary}</span>
+              <span className={`font-semibold ${hasData ? 'text-green-400' : 'text-gray-500'}`}>
+                €{salary.total_net_salary}
+              </span>
             </div>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Horas Normales:</span>
-              <span className="text-white">{salary.total_normal_hours}h</span>
+              <span className={hasData ? 'text-white' : 'text-gray-500'}>
+                {salary.total_normal_hours}h
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Horas Extra:</span>
-              <span className="text-white">{salary.total_overtime_hours}h</span>
+              <span className={hasData ? 'text-white' : 'text-gray-500'}>
+                {salary.total_overtime_hours}h
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Horas Festivas:</span>
-              <span className="text-white">{salary.total_holiday_hours}h</span>
+              <span className={hasData ? 'text-white' : 'text-gray-500'}>
+                {salary.total_holiday_hours}h
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Horas Nocturnas:</span>
-              <span className="text-white">{salary.total_night_hours}h</span>
+              <span className={hasData ? 'text-white' : 'text-gray-500'}>
+                {salary.total_night_hours}h
+              </span>
             </div>
           </div>
         </div>
