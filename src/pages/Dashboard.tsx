@@ -3,7 +3,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
 import { authService } from '@/services/authService';
-import { workSessionService } from '@/services/workSessionService';
 import BottomNavBar from '@/components/BottomNavBar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import WelcomeSection from '@/components/dashboard/WelcomeSection';
@@ -36,15 +35,8 @@ const Dashboard = () => {
     enabled: !!token,
   });
 
-  const { data: workSessionData, isLoading: isLoadingWorkSession } = useQuery({
-    queryKey: ['workSession', token, selectedDate],
-    queryFn: () => workSessionService.getWorkSession(token!, selectedDate),
-    enabled: !!token,
-  });
-
   const currentUser = userInfo?.user;
   const employee = employeeInfo?.employee;
-  const workSession = workSessionData?.hour_session_with_hour_worked?.[0] || null;
 
   const handleNewWorkDay = () => {
     setIsWorkDayFormOpen(true);
@@ -74,7 +66,6 @@ const Dashboard = () => {
       // Invalidar todas las queries relacionadas con el dashboard
       await queryClient.invalidateQueries({ queryKey: ['user'] });
       await queryClient.invalidateQueries({ queryKey: ['employee'] });
-      await queryClient.invalidateQueries({ queryKey: ['workSession'] });
       
       // Actualizar datos del dashboard desde el endpoint
       if (token) {
@@ -121,8 +112,6 @@ const Dashboard = () => {
               selectedDate={selectedDate}
               onDateSelect={handleDateSelect}
               onNewWorkDay={handleNewWorkDay}
-              workSession={workSession}
-              isLoadingWorkSession={isLoadingWorkSession}
             />
           </div>
         </div>
