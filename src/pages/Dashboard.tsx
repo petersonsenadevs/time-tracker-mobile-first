@@ -2,6 +2,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
+import { authService } from '@/services/authService';
 import BottomNavBar from '@/components/BottomNavBar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import WelcomeSection from '@/components/dashboard/WelcomeSection';
@@ -11,7 +12,7 @@ import WorkDayForm from '@/components/WorkDayForm';
 import { useState } from 'react';
 
 const Dashboard = () => {
-  const { user, token, logout, dashboardStats, refreshStats } = useAuth();
+  const { user, token, logout, dashboardStats, setDashboardStats } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isWorkDayFormOpen, setIsWorkDayFormOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -49,13 +50,21 @@ const Dashboard = () => {
     setIsWorkDayFormOpen(false);
   };
 
-  const handleRefresh = () => {
-    // Invalidar queries para refrescar datos
-    queryClient.invalidateQueries({ queryKey: ['user', token] });
-    queryClient.invalidateQueries({ queryKey: ['employee', token] });
-    // Refrescar stats del contexto
-    if (refreshStats) {
-      refreshStats();
+  const handleRefresh = async () => {
+    try {
+      // Invalidar queries para refrescar datos del usuario y empleado
+      queryClient.invalidateQueries({ queryKey: ['user', token] });
+      queryClient.invalidateQueries({ queryKey: ['employee', token] });
+      
+      // Llamar al endpoint de dashboard para actualizar las estadísticas
+      if (token) {
+        const dashboardData = await authService.verifyDashboardAccess(token);
+        if (dashboardData.dashboardData && setDashboardStats) {
+          setDashboardStats(dashboardData.dashboardData);
+        }
+      }
+    } catch (error) {
+      console.error('Error al actualizar datos del dashboard:', error);
     }
   };
 
