@@ -1,9 +1,10 @@
-
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import CalendarSection from './CalendarSection';
 import SalaryInfoCard from './SalaryInfoCard';
 import StatisticsCard from './StatisticsCard';
 import { Employee } from '@/services/userService';
+import { useState, useEffect } from 'react';
+import { type CarouselApi } from '@/components/ui/carousel';
 
 interface DashboardStats {
   totalHoursWorked?: number;
@@ -29,6 +30,29 @@ const DashboardCarousel = ({
   onDateSelect, 
   onNewWorkDay 
 }: DashboardCarouselProps) => {
+  const [api, setApi] = useState<CarouselApi>();
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const updateScrollState = () => {
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
+    };
+
+    updateScrollState();
+    api.on("reInit", updateScrollState);
+    api.on("select", updateScrollState);
+
+    return () => {
+      api?.off("select", updateScrollState);
+    };
+  }, [api]);
+
   const slides = [
     {
       id: 'calendar',
@@ -65,7 +89,7 @@ const DashboardCarousel = ({
 
   return (
     <div className="h-full">
-      <Carousel className="w-full h-full">
+      <Carousel className="w-full h-full" setApi={setApi}>
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
@@ -95,8 +119,12 @@ const DashboardCarousel = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
-        <CarouselNext className="right-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        {canScrollPrev && (
+          <CarouselPrevious className="left-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        )}
+        {canScrollNext && (
+          <CarouselNext className="right-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        )}
       </Carousel>
     </div>
   );
