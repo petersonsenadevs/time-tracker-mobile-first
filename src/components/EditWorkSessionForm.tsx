@@ -49,7 +49,7 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
     mutationFn: async (formData: EditWorkSessionFormData) => {
       if (!token) throw new Error('No hay token de autenticación');
       
-      console.log('Form data being sent:', formData);
+      console.log('Form data received:', formData);
       
       const plannedHoursNum = parseInt(formData.planned_hours);
       if (plannedHoursNum < 2) {
@@ -62,20 +62,22 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
         'HOLIDAY': 'is_holiday'
       };
 
+      // Asegurar que todos los campos estén presentes y formateados correctamente
       const updateData: UpdateHourSessionData = {
-        date: session.date,
+        date: session.date, // Mantener la fecha original
         start_time: formData.start_time,
         end_time: formData.end_time,
         planned_hours: plannedHoursNum,
         work_type: formData.work_type ? workTypeMap[formData.work_type] : 'is_normal',
       };
 
-      console.log('Update data being sent to API:', updateData);
+      console.log('Final update data:', updateData);
+      console.log('Session date for query parameter:', session.date);
       
       return await updateWorkSessionService.updateHourSession(updateData, session.date, token);
     },
     onSuccess: (response) => {
-      console.log('Update response:', response);
+      console.log('Update successful, response:', response);
       toast.success('Sesión actualizada exitosamente');
       queryClient.invalidateQueries({ queryKey: ['workSessions'] });
       onClose();
@@ -88,6 +90,12 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
 
   const handleSubmit = (data: EditWorkSessionFormData) => {
     console.log('Form submitted with data:', data);
+    
+    // Validación adicional
+    if (!data.start_time || !data.end_time || !data.planned_hours) {
+      toast.error('Todos los campos son requeridos');
+      return;
+    }
     
     const plannedHoursNum = parseInt(data.planned_hours);
     if (plannedHoursNum < 2) {
