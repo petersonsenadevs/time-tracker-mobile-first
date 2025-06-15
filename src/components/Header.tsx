@@ -1,8 +1,8 @@
-
 import { useState } from 'react';
 import { Menu, X, LogIn, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/ui/logo';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,15 +12,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <div className="relative">
-              <img 
-                src="https://iwxedutdoaukcadsvqux.supabase.co/storage/v1/object/public/klk//Logo%20JORNALIA_BLANCO.png" 
-                alt="Jornalia Logo" 
-                className="h-8 w-auto sm:h-10 sm:w-auto object-contain"
-              />
-            </div>
-          </Link>
+          <Logo size="sm" />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

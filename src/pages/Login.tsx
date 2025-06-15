@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { LoginData } from '@/services/authService';
+import Logo from '@/components/ui/logo';
 
 const loginSchema = z.object({
   email: z.string()
@@ -58,15 +59,9 @@ const Login = () => {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="text-center">
-          <Link to="/" className="flex items-center justify-center mb-6 hover:opacity-80 transition-opacity">
-            <div className="relative">
-              <img 
-                src="https://iwxedutdoaukcadsvqux.supabase.co/storage/v1/object/public/klk//Logo%20JORNALIA_BLANCO.png" 
-                alt="Jornalia Logo" 
-                className="h-12 w-auto object-contain"
-              />
-            </div>
-          </Link>
+          <div className="flex items-center justify-center mb-6">
+            <Logo size="lg" />
+          </div>
           <h2 className="text-3xl font-bold text-white">Iniciar Sesión</h2>
           <p className="mt-2 text-gray-400">Accede a tu cuenta para gestionar tus horas</p>
         </div>
