@@ -12,7 +12,7 @@ interface RegisterNavigationProps {
 
 const RegisterNavigation = ({ currentStep, isLoading, onPrevious, onNext }: RegisterNavigationProps) => {
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-4">
       <div className="flex justify-between">
         <Button
           type="button"
@@ -48,12 +48,12 @@ const RegisterNavigation = ({ currentStep, isLoading, onPrevious, onNext }: Regi
         )}
       </div>
 
-      <div className="text-center">
+      <div className="text-center border-t border-gray-700 pt-4">
         <p className="text-gray-400 text-sm">
           ¿Ya tienes cuenta?{' '}
           <Link 
             to="/login" 
-            className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+            className="text-teal-400 hover:text-teal-300 font-medium transition-colors underline"
           >
             Iniciar Sesión
           </Link>
