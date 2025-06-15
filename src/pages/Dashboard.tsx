@@ -3,8 +3,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
 import { authService } from '@/services/authService';
+import { LayoutDashboard } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import AppHeader from '@/components/AppHeader';
 import WelcomeSection from '@/components/dashboard/WelcomeSection';
 import StatsCards from '@/components/dashboard/StatsCards';
 import DashboardCarousel from '@/components/dashboard/DashboardCarousel';
@@ -19,7 +20,6 @@ const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
-  // Log para debuggear los datos del dashboard
   console.log('Dashboard - dashboardStats:', dashboardStats);
   console.log('Dashboard - countHourSessionDay específicamente:', dashboardStats?.countHourSessionDay);
 
@@ -63,11 +63,9 @@ const Dashboard = () => {
       setIsRefreshing(true);
       console.log('Iniciando actualización del dashboard...');
       
-      // Invalidar todas las queries relacionadas con el dashboard
       await queryClient.invalidateQueries({ queryKey: ['user'] });
       await queryClient.invalidateQueries({ queryKey: ['employee'] });
       
-      // Actualizar datos del dashboard desde el endpoint
       if (token) {
         const dashboardData = await authService.verifyDashboardAccess(token);
         console.log('Datos del dashboard actualizados:', dashboardData);
@@ -89,11 +87,15 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
-      <DashboardHeader 
+      <AppHeader 
+        pageTitle="Dashboard"
+        pageIcon={LayoutDashboard}
         user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
         onLogout={logout}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
+        showUserInfo={true}
+        showActions={true}
       />
       
       <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">

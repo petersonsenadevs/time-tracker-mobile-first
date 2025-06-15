@@ -3,8 +3,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { userService, UpdateEmailData, ChangePasswordData } from '@/services/userService';
 import { toast } from 'sonner';
+import { Settings as SettingsIcon } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
-import SettingsHeader from '@/components/settings/SettingsHeader';
+import AppHeader from '@/components/AppHeader';
 import SettingsCategories from '@/components/settings/SettingsCategories';
 import PersonalInfoCard from '@/components/settings/PersonalInfoCard';
 import UpdateEmailCard from '@/components/settings/UpdateEmailCard';
@@ -16,14 +17,12 @@ import SettingsErrorState from '@/components/settings/SettingsErrorState';
 const Settings = () => {
   const { token, logout } = useAuth();
 
-  // Obtener información del usuario desde la API
   const { data: userInfo, refetch, isLoading } = useQuery({
     queryKey: ['user', token],
     queryFn: () => userService.showUser(token!),
     enabled: !!token,
   });
 
-  // Mutación para actualizar email
   const updateEmailMutation = useMutation({
     mutationFn: (data: UpdateEmailData) => userService.updateEmail(data, token!),
     onSuccess: (response) => {
@@ -35,7 +34,6 @@ const Settings = () => {
     },
   });
 
-  // Mutación para cambiar contraseña
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePasswordData) => userService.changePassword(data, token!),
     onSuccess: (response) => {
@@ -46,7 +44,6 @@ const Settings = () => {
     },
   });
 
-  // Mutación para eliminar usuario
   const deleteUserMutation = useMutation({
     mutationFn: () => userService.deleteUser(token!),
     onSuccess: (response) => {
@@ -70,7 +67,6 @@ const Settings = () => {
     deleteUserMutation.mutate();
   };
 
-  // Usar los datos del endpoint user/show
   const currentUser = userInfo?.user;
 
   if (isLoading) {
@@ -83,8 +79,19 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-black text-white pb-20 lg:pb-8">
+      <AppHeader 
+        pageTitle="Configuración"
+        pageIcon={SettingsIcon}
+        onLogout={logout}
+        showUserInfo={false}
+        showActions={true}
+      />
+
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <SettingsHeader />
+        <div className="mb-8">
+          <p className="text-gray-400">Gestiona tu cuenta y preferencias</p>
+        </div>
+
         <SettingsCategories />
 
         <div className="grid gap-6 lg:grid-cols-2">

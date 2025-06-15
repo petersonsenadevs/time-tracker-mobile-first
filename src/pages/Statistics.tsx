@@ -1,11 +1,12 @@
+
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { reportService } from '@/services/reportService';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, BarChart3 } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
-import StatisticsHeader from '@/components/statistics/StatisticsHeader';
+import AppHeader from '@/components/AppHeader';
 import MonthYearSelector from '@/components/statistics/MonthYearSelector';
 import ReportSummary from '@/components/statistics/ReportSummary';
 import DailyBreakdown from '@/components/statistics/DailyBreakdown';
@@ -13,7 +14,7 @@ import SalaryInfo from '@/components/statistics/SalaryInfo';
 import ExportButtons from '@/components/statistics/ExportButtons';
 
 const Statistics = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
@@ -22,7 +23,7 @@ const Statistics = () => {
     queryKey: ['monthly-report', selectedMonth, selectedYear, token],
     queryFn: () => reportService.getMonthlyReport(selectedMonth, selectedYear, token!),
     enabled: !!token,
-    retry: false, // No reintentar en caso de error
+    retry: false,
   });
 
   const handleMonthYearChange = (month: number, year: number) => {
@@ -37,9 +38,19 @@ const Statistics = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      <StatisticsHeader />
+      <AppHeader 
+        pageTitle="Estadísticas"
+        pageIcon={BarChart3}
+        onLogout={logout}
+        showUserInfo={false}
+        showActions={true}
+      />
       
       <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 space-y-6">
+        <div className="mb-4">
+          <p className="text-gray-400 text-sm">Reporte mensual de horas trabajadas</p>
+        </div>
+
         <MonthYearSelector 
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}

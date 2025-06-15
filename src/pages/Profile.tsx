@@ -2,7 +2,9 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
+import { User2 } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
+import AppHeader from '@/components/AppHeader';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import ProfileLoadingState from '@/components/profile/ProfileLoadingState';
@@ -10,26 +12,23 @@ import ProfileErrorState from '@/components/profile/ProfileErrorState';
 import ProfileContent from '@/components/profile/ProfileContent';
 
 const Profile = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Obtener información del empleado desde la API
   const { data: employeeInfo, refetch: refetchEmployee, isLoading: isLoadingEmployee } = useQuery({
     queryKey: ['employee', token],
     queryFn: () => userService.getEmployee(token!),
     enabled: !!token,
   });
 
-  // Obtener información básica del usuario
   const { data: userInfo, isLoading: isLoadingUser } = useQuery({
     queryKey: ['user', token],
     queryFn: () => userService.showUser(token!),
     enabled: !!token,
   });
 
-  // Mutación para actualizar empleado
   const updateEmployeeMutation = useMutation({
     mutationFn: (data: any) => userService.updateEmployee(data, token!),
     onSuccess: (response) => {
@@ -67,15 +66,26 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
-      <ProfileContent
-        employee={employee}
-        currentUser={currentUser}
-        isEditing={isEditing}
-        onEdit={() => setIsEditing(true)}
-        onSave={handleSaveEmployee}
-        onCancel={() => setIsEditing(false)}
-        isUpdating={updateEmployeeMutation.isPending}
+      <AppHeader 
+        pageTitle="Perfil"
+        pageIcon={User2}
+        onLogout={logout}
+        showUserInfo={false}
+        showActions={true}
       />
+
+      <div className="flex-1 pb-20 lg:pb-6">
+        <ProfileContent
+          employee={employee}
+          currentUser={currentUser}
+          isEditing={isEditing}
+          onEdit={() => setIsEditing(true)}
+          onSave={handleSaveEmployee}
+          onCancel={() => setIsEditing(false)}
+          isUpdating={updateEmployeeMutation.isPending}
+        />
+      </div>
+
       <BottomNavBar />
     </div>
   );

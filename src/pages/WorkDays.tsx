@@ -4,15 +4,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { workSessionService, WorkSession } from '@/services/workSessionService';
 import { format } from 'date-fns';
+import { Calendar } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
+import AppHeader from '@/components/AppHeader';
 import EditWorkSessionForm from '@/components/EditWorkSessionForm';
-import WorkDaysHeader from '@/components/workdays/WorkDaysHeader';
 import WorkDaysSearch from '@/components/workdays/WorkDaysSearch';
 import WorkSessionCard from '@/components/workdays/WorkSessionCard';
 import { LoadingState, ErrorState, EmptyState } from '@/components/workdays/WorkDaysStates';
 
 const WorkDays = () => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null);
@@ -37,7 +38,6 @@ const WorkDays = () => {
   const handleDateChange = (date: Date | undefined) => {
     if (date) {
       setSelectedDate(date);
-      // Auto-search when date is selected
       const formattedDate = format(date, 'yyyy-MM-dd');
       setCurrentSearchDate(formattedDate);
     }
@@ -45,11 +45,23 @@ const WorkDays = () => {
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
+      <AppHeader 
+        pageTitle="Días Trabajados"
+        pageIcon={Calendar}
+        onLogout={logout}
+        showUserInfo={false}
+        showActions={true}
+      />
+
       <div className="container mx-auto px-4 py-6 max-w-4xl flex-1 pb-20 lg:pb-6">
-        <WorkDaysHeader 
-          currentSearchDate={currentSearchDate} 
-          hasData={workSessions.length > 0}
-        />
+        <div className="mb-6">
+          <p className="text-gray-400 text-sm">
+            {currentSearchDate && workSessions.length > 0 
+              ? `Mostrando datos para ${format(new Date(currentSearchDate), 'dd/MM/yyyy')}`
+              : 'Busca sesiones de trabajo por fecha'
+            }
+          </p>
+        </div>
 
         <WorkDaysSearch
           selectedDate={selectedDate}
@@ -57,7 +69,6 @@ const WorkDays = () => {
           onSearch={handleSearch}
         />
 
-        {/* Results Section */}
         <div className="space-y-6">
           {isLoading ? (
             <LoadingState />
@@ -80,7 +91,6 @@ const WorkDays = () => {
 
       <BottomNavBar />
 
-      {/* Edit Form Modal */}
       {editingSession && (
         <EditWorkSessionForm
           session={editingSession}
