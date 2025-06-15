@@ -41,7 +41,7 @@ const SettingsCarousel = ({
       id: 'account',
       title: 'Gestión de Cuenta',
       content: (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-2">
           <UpdateEmailCard 
             onUpdateEmail={onUpdateEmail}
             isLoading={isEmailLoading}
@@ -81,23 +81,23 @@ const SettingsCarousel = ({
   ];
 
   return (
-    <div className="h-full max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-200px)]">
+    <div className="h-full max-h-[calc(100vh-220px)] lg:max-h-[calc(100vh-180px)]">
       <Carousel className="w-full h-full">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
-              <div className="h-full flex flex-col max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-200px)]">
-                <div className="flex items-center justify-between mb-3 sm:mb-4 flex-shrink-0">
-                  <h2 className="text-lg sm:text-xl font-bold text-white">{slide.title}</h2>
+              <div className="h-full flex flex-col">
+                <div className="flex items-center justify-between mb-2 flex-shrink-0">
+                  <h2 className="text-lg font-bold text-white">{slide.title}</h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm text-gray-400">
+                    <span className="text-xs text-gray-400">
                       {index + 1} de {slides.length}
                     </span>
                     <div className="flex gap-1">
                       {slides.map((_, i) => (
                         <div
                           key={i}
-                          className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
                             i === index ? 'bg-teal-400' : 'bg-gray-600'
                           }`}
                         />
@@ -105,15 +105,15 @@ const SettingsCarousel = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="flex-1 min-h-0 max-h-[calc(100vh-280px)] lg:max-h-[calc(100vh-240px)] overflow-hidden">
                   {slide.content}
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 sm:left-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6 sm:h-8 sm:w-8" />
-        <CarouselNext className="right-2 sm:right-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6 sm:h-8 sm:w-8" />
+        <CarouselPrevious className="left-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6" />
+        <CarouselNext className="right-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6" />
       </Carousel>
     </div>
   );
