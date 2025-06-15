@@ -6,15 +6,10 @@ interface ApiError {
 }
 
 class ApiClient {
-  private baseURL: string;
+  public baseURL: string;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-  }
-
-  // Getter público para acceder a la baseURL
-  get baseURL() {
-    return this.baseURL;
   }
 
   private async request<T>(

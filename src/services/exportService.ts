@@ -11,7 +11,7 @@ export const exportService = {
   async exportToPDF(month: number, year: number, sendEmail: boolean, token: string): Promise<Blob> {
     try {
       console.log('Exporting to PDF:', { month, year, sendEmail });
-      const response = await fetch(`${apiClient['baseURL']}/api/export/pdf?month=${month}&year=${year}&sendEmail=${sendEmail}`, {
+      const response = await fetch(`${apiClient.baseURL}/api/export/pdf?month=${month}&year=${year}&sendEmail=${sendEmail}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -32,7 +32,7 @@ export const exportService = {
   async exportToCSV(month: number, year: number, sendEmail: boolean, token: string): Promise<Blob> {
     try {
       console.log('Exporting to CSV:', { month, year, sendEmail });
-      const response = await fetch(`${apiClient['baseURL']}/api/export/csv?month=${month}&year=${year}&sendEmail=${sendEmail}`, {
+      const response = await fetch(`${apiClient.baseURL}/api/export/csv?month=${month}&year=${year}&sendEmail=${sendEmail}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
