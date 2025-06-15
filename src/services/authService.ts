@@ -38,6 +38,7 @@ interface DailyWorkHour {
 interface DashboardData {
   totalHoursWorked: number;
   currentMonthSalary: number;
+  countHourSessionDay: number;
   dailyWorkHours: DailyWorkHour[];
 }
 
@@ -56,6 +57,7 @@ interface DashboardResponse {
 interface LegacyDashboardResponse {
   total_hours_worked: string; // Formato "H:M" como "0:0"
   current_month_salary: string; // Formato "0.00"
+  count_hour_session_day: number; // Nuevo campo
   user?: {
     id: number;
     name: string;
@@ -142,9 +144,13 @@ export const authService = {
       // Convertir el salario string a number
       const currentMonthSalary = parseFloat(legacyResponse.current_month_salary) || 0;
       
+      // Obtener el conteo de días trabajados
+      const countHourSessionDay = legacyResponse.count_hour_session_day || 0;
+      
       console.log('Converted legacy data:', {
         totalHoursWorked,
         currentMonthSalary,
+        countHourSessionDay,
         originalTime: legacyResponse.total_hours_worked,
         originalSalary: legacyResponse.current_month_salary
       });
@@ -154,6 +160,7 @@ export const authService = {
         dashboardData: {
           totalHoursWorked,
           currentMonthSalary,
+          countHourSessionDay,
           dailyWorkHours: []
         },
         user: legacyResponse.user

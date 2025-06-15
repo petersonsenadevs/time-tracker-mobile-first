@@ -15,6 +15,7 @@ interface AuthUser {
 interface DashboardStats {
   totalHoursWorked: number;
   currentMonthSalary: number;
+  countHourSessionDay: number;
   dailyWorkHours: Array<{
     date: string;
     startTime: string;

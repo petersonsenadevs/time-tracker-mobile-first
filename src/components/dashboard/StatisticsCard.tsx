@@ -3,11 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Award } from 'lucide-react';
 import { Employee } from '@/services/userService';
 
-interface StatisticsCardProps {
-  employee: Employee | undefined;
+interface DashboardStats {
+  totalHoursWorked?: number;
+  currentMonthSalary?: number;
+  countHourSessionDay?: number;
 }
 
-const StatisticsCard = ({ employee }: StatisticsCardProps) => {
+interface StatisticsCardProps {
+  employee: Employee | undefined;
+  dashboardStats?: DashboardStats | null;
+}
+
+const StatisticsCard = ({ employee, dashboardStats }: StatisticsCardProps) => {
   return (
     <Card className="bg-gray-900/50 border-gray-700 h-full">
       <CardHeader>
@@ -22,12 +29,16 @@ const StatisticsCard = ({ employee }: StatisticsCardProps) => {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="text-center p-6 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-lg border border-blue-500/30">
-            <div className="text-4xl font-bold text-white mb-2">0</div>
+            <div className="text-4xl font-bold text-white mb-2">
+              {dashboardStats?.countHourSessionDay || 0}
+            </div>
             <div className="text-gray-400 text-sm">Días Trabajados</div>
             <div className="text-blue-400 text-xs mt-1">Este mes</div>
           </div>
           <div className="text-center p-6 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-lg border border-green-500/30">
-            <div className="text-4xl font-bold text-white mb-2">0h</div>
+            <div className="text-4xl font-bold text-white mb-2">
+              {dashboardStats?.totalHoursWorked?.toFixed(1) || '0.0'}h
+            </div>
             <div className="text-gray-400 text-sm">Horas Totales</div>
             <div className="text-green-400 text-xs mt-1">Acumuladas</div>
           </div>

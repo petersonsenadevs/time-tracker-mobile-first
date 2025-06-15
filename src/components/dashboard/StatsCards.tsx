@@ -3,6 +3,7 @@ interface DashboardStats {
   totalHoursWorked?: number;
   dailyWorkHours?: any[];
   currentMonthSalary?: number;
+  countHourSessionDay?: number;
 }
 
 interface StatsCardsProps {
@@ -26,7 +27,7 @@ const StatsCards = ({ dashboardStats }: StatsCardsProps) => {
             {dashboardStats?.totalHoursWorked?.toFixed(1) || '0.0'}h
           </div>
           <p className="text-teal-300 text-xs">
-            {dashboardStats?.dailyWorkHours?.length || 0} días trabajados
+            {dashboardStats?.countHourSessionDay || 0} días trabajados
           </p>
         </div>
       </div>
