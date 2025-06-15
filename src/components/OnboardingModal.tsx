@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface OnboardingModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
   const [showModal, setShowModal] = useState(isOpen);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const steps = [
     {
@@ -65,12 +67,22 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   };
 
   const handleClose = () => {
-    localStorage.setItem('onboarding-completed', 'true');
+    if (dontShowAgain) {
+      localStorage.setItem('onboarding-completed', 'true');
+    }
     setShowModal(false);
     onClose();
   };
 
   const handleSkip = () => {
+    if (dontShowAgain) {
+      localStorage.setItem('onboarding-completed', 'true');
+    }
+    setShowModal(false);
+    onClose();
+  };
+
+  const handleFinish = () => {
     localStorage.setItem('onboarding-completed', 'true');
     setShowModal(false);
     onClose();
@@ -174,8 +186,24 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
               </div>
             </div>
 
+            {/* Checkbox para no mostrar más */}
+            <div className="flex items-center space-x-2 mb-4 pt-4 border-t border-gray-700">
+              <Checkbox 
+                id="dont-show-again"
+                checked={dontShowAgain}
+                onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
+                className="border-gray-600 data-[state=checked]:bg-teal-500 data-[state=checked]:border-teal-500"
+              />
+              <label 
+                htmlFor="dont-show-again" 
+                className="text-sm text-gray-400 cursor-pointer"
+              >
+                No mostrar este tutorial nuevamente
+              </label>
+            </div>
+
             {/* Navigation Compacta */}
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
               <button
                 onClick={prevStep}
                 disabled={currentStep === 0}
@@ -198,7 +226,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
 
               {currentStep === steps.length - 1 ? (
                 <button
-                  onClick={handleClose}
+                  onClick={handleFinish}
                   className="bg-teal-500 hover:bg-teal-600 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105"
                 >
                   ¡Comenzar!
