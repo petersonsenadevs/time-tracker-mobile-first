@@ -36,6 +36,7 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   checkAuthStatus: () => Promise<void>;
+  setDashboardStats: (stats: DashboardStats | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -195,6 +196,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     checkAuthStatus,
+    setDashboardStats,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

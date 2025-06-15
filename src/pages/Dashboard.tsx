@@ -1,3 +1,4 @@
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
@@ -9,11 +10,13 @@ import StatsCards from '@/components/dashboard/StatsCards';
 import DashboardCarousel from '@/components/dashboard/DashboardCarousel';
 import WorkDayForm from '@/components/WorkDayForm';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const Dashboard = () => {
   const { user, token, logout, dashboardStats, setDashboardStats } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isWorkDayFormOpen, setIsWorkDayFormOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: userInfo } = useQuery({
@@ -50,20 +53,32 @@ const Dashboard = () => {
   };
 
   const handleRefresh = async () => {
+    if (isRefreshing) return;
+    
     try {
-      // Invalidar queries para refrescar datos del usuario y empleado
-      queryClient.invalidateQueries({ queryKey: ['user', token] });
-      queryClient.invalidateQueries({ queryKey: ['employee', token] });
+      setIsRefreshing(true);
+      console.log('Iniciando actualización del dashboard...');
       
-      // Llamar al endpoint de dashboard para actualizar las estadísticas
+      // Invalidar todas las queries relacionadas con el dashboard
+      await queryClient.invalidateQueries({ queryKey: ['user'] });
+      await queryClient.invalidateQueries({ queryKey: ['employee'] });
+      
+      // Actualizar datos del dashboard desde el endpoint
       if (token) {
         const dashboardData = await authService.verifyDashboardAccess(token);
-        if (dashboardData.dashboardData && setDashboardStats) {
+        console.log('Datos del dashboard actualizados:', dashboardData);
+        
+        if (dashboardData.dashboardData) {
           setDashboardStats(dashboardData.dashboardData);
         }
       }
+      
+      toast.success('Dashboard actualizado correctamente');
     } catch (error) {
-      console.error('Error al actualizar datos del dashboard:', error);
+      console.error('Error al actualizar el dashboard:', error);
+      toast.error('Error al actualizar el dashboard');
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -73,6 +88,7 @@ const Dashboard = () => {
         user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
         onLogout={logout}
         onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
       />
       
       <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">

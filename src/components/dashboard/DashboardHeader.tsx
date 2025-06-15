@@ -1,15 +1,16 @@
 
 import { Button } from '@/components/ui/button';
-import { Clock, LogOut, RefreshCcw } from 'lucide-react';
+import { Clock, LogOut, RefreshCw } from 'lucide-react';
 import { User } from '@/services/userService';
 
 interface DashboardHeaderProps {
   user: User | null;
   onLogout: () => void;
   onRefresh: () => void;
+  isRefreshing?: boolean;
 }
 
-const DashboardHeader = ({ user, onLogout, onRefresh }: DashboardHeaderProps) => {
+const DashboardHeader = ({ user, onLogout, onRefresh, isRefreshing = false }: DashboardHeaderProps) => {
   return (
     <header className="bg-gray-900/90 backdrop-blur-sm border-b border-teal-500/20 sticky top-0 z-40">
       <div className="px-4 py-3">
@@ -28,9 +29,10 @@ const DashboardHeader = ({ user, onLogout, onRefresh }: DashboardHeaderProps) =>
               variant="ghost"
               size="sm"
               onClick={onRefresh}
+              disabled={isRefreshing}
               className="text-gray-400 hover:text-teal-400 hover:bg-teal-500/10 h-8 w-8 p-0"
             >
-              <RefreshCcw className="h-4 w-4" />
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
             <Button
               variant="ghost"
