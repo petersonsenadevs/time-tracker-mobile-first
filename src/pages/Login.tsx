@@ -60,10 +60,10 @@ const Login = () => {
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-6">
+          <Link to="/" className="flex items-center justify-center space-x-2 mb-6 hover:opacity-80 transition-opacity">
             <Clock className="h-10 w-10 text-teal-400" />
             <span className="text-2xl font-bold text-white">TimeTracker</span>
-          </div>
+          </Link>
           <h2 className="text-3xl font-bold text-white">Iniciar Sesión</h2>
           <p className="mt-2 text-gray-400">Accede a tu cuenta para gestionar tus horas</p>
         </div>

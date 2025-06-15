@@ -119,10 +119,10 @@ const Register = () => {
       <div className="max-w-2xl mx-auto">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
+          <Link to="/" className="flex items-center justify-center space-x-2 mb-4 hover:opacity-80 transition-opacity">
             <Clock className="h-10 w-10 text-teal-400" />
             <span className="text-2xl font-bold text-white">TimeTracker</span>
-          </div>
+          </Link>
           <h2 className="text-3xl font-bold text-white">Crear Cuenta</h2>
           <p className="mt-2 text-gray-400">Regístrate para comenzar a gestionar tus horas</p>
         </div>
