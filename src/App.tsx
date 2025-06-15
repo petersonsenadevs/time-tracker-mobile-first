@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Statistics from "./pages/Statistics";
+import WorkDays from "./pages/WorkDays";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,6 +64,14 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/workdays" 
+        element={
+          <ProtectedRoute>
+            <WorkDays />
           </ProtectedRoute>
         } 
       />
