@@ -64,13 +64,13 @@ const DashboardCarousel = ({
   ];
 
   return (
-    <div className="h-full lg:h-[calc(100vh-200px)]">
+    <div className="h-[500px] lg:h-[600px]">
       <Carousel className="w-full h-full">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between mb-4 sm:mb-6 flex-shrink-0">
+                <div className="flex items-center justify-between mb-4 flex-shrink-0">
                   <h2 className="text-xl font-bold text-white">{slide.title}</h2>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-400">

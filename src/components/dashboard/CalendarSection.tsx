@@ -21,13 +21,12 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      // Solo permitir fechas hasta hoy
       const today = new Date();
       today.setHours(23, 59, 59, 999);
       
       if (date <= today) {
         onDateSelect(date);
-        onNewWorkDay(); // Abrir el formulario cuando se selecciona una fecha válida
+        onNewWorkDay();
       }
     }
   };
@@ -74,168 +73,160 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
 
   return (
     <Card className="bg-gray-900/50 border-gray-700 h-full">
-      <CardContent className="p-4 sm:p-6 h-full flex flex-col">
-        <div className="flex flex-col space-y-4 h-full">
-          <div className="flex justify-between items-center">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-              onClick={goToToday}
-              disabled={isToday(selectedDate)}
-              aria-label="Ir a fecha actual"
-            >
-              <CalendarDays className="h-4 w-4 mr-2" />
-              Hoy
-            </Button>
-            
-            <Button
-              size="sm"
-              className="bg-teal-500 hover:bg-teal-600 text-black font-medium transition-colors"
-              onClick={onNewWorkDay}
-              aria-label="Crear nueva jornada de trabajo"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Nueva Jornada
-            </Button>
-          </div>
+      <CardContent className="p-4 h-full flex flex-col">
+        {/* Action buttons */}
+        <div className="flex justify-between items-center mb-4 flex-shrink-0">
+          <Button
+            size="sm"
+            variant="outline"
+            className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+            onClick={goToToday}
+            disabled={isToday(selectedDate)}
+          >
+            <CalendarDays className="h-4 w-4 mr-2" />
+            Hoy
+          </Button>
+          
+          <Button
+            size="sm"
+            className="bg-teal-500 hover:bg-teal-600 text-black font-medium transition-colors"
+            onClick={onNewWorkDay}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Nueva Jornada
+          </Button>
+        </div>
 
-          {/* Navegación personalizada para móviles */}
-          <div className="flex items-center justify-between px-2 py-3 bg-gray-800/50 rounded-lg">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handlePreviousMonth}
-              className="text-gray-300 hover:text-white hover:bg-gray-700 p-2"
-              aria-label="Mes anterior"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            
-            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="text-white font-semibold text-lg capitalize hover:bg-gray-700 px-4 py-2"
-                >
-                  {format(month, "MMMM yyyy", { locale: es })}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80 p-4 bg-gray-800 border-gray-600" align="center">
-                <div className="space-y-4">
-                  <div className="text-center text-white font-medium">
-                    Seleccionar mes y año
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm text-gray-300">Mes</label>
-                      <Select
-                        value={month.getMonth().toString()}
-                        onValueChange={(value) => handleMonthYearChange(parseInt(value), month.getFullYear())}
-                      >
-                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-700 border-gray-600">
-                          {months.map((monthName, index) => (
-                            <SelectItem 
-                              key={index} 
-                              value={index.toString()}
-                              className="text-white hover:bg-gray-600"
-                            >
-                              {monthName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm text-gray-300">Año</label>
-                      <Select
-                        value={month.getFullYear().toString()}
-                        onValueChange={(value) => handleMonthYearChange(month.getMonth(), parseInt(value))}
-                      >
-                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-700 border-gray-600">
-                          {years.map((year) => (
-                            <SelectItem 
-                              key={year} 
-                              value={year.toString()}
-                              className="text-white hover:bg-gray-600"
-                            >
-                              {year}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-center pt-2">
-                    <Button
-                      size="sm"
-                      onClick={() => setIsDatePickerOpen(false)}
-                      className="bg-teal-500 hover:bg-teal-600 text-black"
+        {/* Month/Year navigation */}
+        <div className="flex items-center justify-between px-2 py-2 bg-gray-800/50 rounded-lg mb-4 flex-shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handlePreviousMonth}
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          
+          <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                className="text-white font-semibold capitalize hover:bg-gray-700 px-4 py-2"
+              >
+                {format(month, "MMMM yyyy", { locale: es })}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4 bg-gray-800 border-gray-600" align="center">
+              <div className="space-y-4">
+                <div className="text-center text-white font-medium">
+                  Seleccionar mes y año
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-300">Mes</label>
+                    <Select
+                      value={month.getMonth().toString()}
+                      onValueChange={(value) => handleMonthYearChange(parseInt(value), month.getFullYear())}
                     >
-                      Confirmar
-                    </Button>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600">
+                        {months.map((monthName, index) => (
+                          <SelectItem 
+                            key={index} 
+                            value={index.toString()}
+                            className="text-white hover:bg-gray-600"
+                          >
+                            {monthName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-300">Año</label>
+                    <Select
+                      value={month.getFullYear().toString()}
+                      onValueChange={(value) => handleMonthYearChange(month.getMonth(), parseInt(value))}
+                    >
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-700 border-gray-600">
+                        {years.map((year) => (
+                          <SelectItem 
+                            key={year} 
+                            value={year.toString()}
+                            className="text-white hover:bg-gray-600"
+                          >
+                            {year}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-              </PopoverContent>
-            </Popover>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleNextMonth}
-              disabled={!canGoNext()}
-              className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Mes siguiente"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
-          </div>
+                
+                <div className="flex justify-center pt-2">
+                  <Button
+                    size="sm"
+                    onClick={() => setIsDatePickerOpen(false)}
+                    className="bg-teal-500 hover:bg-teal-600 text-black"
+                  >
+                    Confirmar
+                  </Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
           
-          <div className="flex-1 flex justify-center items-start">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleDateSelect}
-              month={month}
-              onMonthChange={setMonth}
-              locale={es}
-              disabled={(date) => {
-                const today = new Date();
-                today.setHours(23, 59, 59, 999);
-                return date > today;
-              }}
-              className="rounded-md border-gray-700 w-full max-w-lg"
-              classNames={{
-                months: "flex w-full justify-center",
-                month: "space-y-4 w-full",
-                caption: "hidden", // Ocultamos la navegación por defecto
-                nav: "hidden", // Ocultamos la navegación por defecto
-                table: "w-full border-collapse space-y-1",
-                head_row: "flex w-full",
-                head_cell: "text-gray-400 rounded-md w-full font-medium text-sm py-4 text-center",
-                row: "flex w-full mt-2",
-                cell: "relative w-full h-16 sm:h-16 text-center text-sm p-1 focus-within:relative focus-within:z-20",
-                day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg flex items-center justify-center cursor-pointer text-lg sm:text-xl active:scale-95",
-                day_range_end: "day-range-end",
-                day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-bold shadow-lg scale-105",
-                day_today: "bg-gray-700 text-white font-bold border-2 border-gray-500 shadow-md",
-                day_outside: "text-gray-600 opacity-40 aria-selected:bg-gray-800 aria-selected:text-gray-400 aria-selected:opacity-30",
-                day_disabled: "text-gray-600 opacity-20 cursor-not-allowed",
-                day_range_middle: "aria-selected:bg-gray-700 aria-selected:text-white",
-                day_hidden: "invisible",
-              }}
-              aria-label="Calendario para seleccionar fecha de jornada laboral"
-            />
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleNextMonth}
+            disabled={!canGoNext()}
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        {/* Calendar */}
+        <div className="flex-1 flex justify-center items-center min-h-0">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={handleDateSelect}
+            month={month}
+            onMonthChange={setMonth}
+            locale={es}
+            disabled={(date) => {
+              const today = new Date();
+              today.setHours(23, 59, 59, 999);
+              return date > today;
+            }}
+            className="rounded-md border-gray-700 w-full max-w-sm"
+            classNames={{
+              months: "flex w-full justify-center",
+              month: "space-y-2 w-full",
+              caption: "hidden",
+              nav: "hidden",
+              table: "w-full border-collapse space-y-1",
+              head_row: "flex w-full",
+              head_cell: "text-gray-400 rounded-md w-full font-medium text-xs py-2 text-center",
+              row: "flex w-full mt-1",
+              cell: "relative w-full h-10 text-center text-sm p-0.5",
+              day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-md flex items-center justify-center cursor-pointer text-sm active:scale-95",
+              day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-bold shadow-lg scale-105",
+              day_today: "bg-gray-700 text-white font-bold border border-gray-500",
+              day_outside: "text-gray-600 opacity-40",
+              day_disabled: "text-gray-600 opacity-20 cursor-not-allowed",
+            }}
+          />
         </div>
       </CardContent>
     </Card>

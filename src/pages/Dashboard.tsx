@@ -113,7 +113,7 @@ const Dashboard = () => {
   console.log('Renderizando Dashboard - showOnboarding:', showOnboarding);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
+    <div className="min-h-screen bg-black text-white flex flex-col">
       <AppHeader 
         pageTitle="Dashboard"
         pageIcon={LayoutDashboard}
@@ -125,23 +125,25 @@ const Dashboard = () => {
         showActions={true}
       />
       
-      <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">
-        <div className="h-full flex flex-col lg:block">
-          <WelcomeSection 
-            user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
-          />
-          
-          <StatsCards dashboardStats={dashboardStats} />
-          
-          <div className="flex-1 lg:flex-none">
-            <DashboardCarousel
-              dashboardStats={dashboardStats}
-              employee={employee}
-              isLoadingEmployee={isLoadingEmployee}
-              selectedDate={selectedDate}
-              onDateSelect={handleDateSelect}
-              onNewWorkDay={handleNewWorkDay}
+      <div className="flex-1 pt-4 pb-20 lg:pb-6 overflow-auto">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="space-y-6">
+            <WelcomeSection 
+              user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
             />
+            
+            <StatsCards dashboardStats={dashboardStats} />
+            
+            <div className="min-h-0">
+              <DashboardCarousel
+                dashboardStats={dashboardStats}
+                employee={employee}
+                isLoadingEmployee={isLoadingEmployee}
+                selectedDate={selectedDate}
+                onDateSelect={handleDateSelect}
+                onNewWorkDay={handleNewWorkDay}
+              />
+            </div>
           </div>
         </div>
       </div>

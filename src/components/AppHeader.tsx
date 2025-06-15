@@ -25,7 +25,7 @@ const AppHeader = ({
   showActions = true
 }: AppHeaderProps) => {
   return (
-    <header className="bg-gray-900/90 backdrop-blur-sm border-b border-teal-500/20 sticky top-0 z-40 h-16">
+    <header className="bg-gray-900/95 backdrop-blur-sm border-b border-teal-500/20 fixed top-0 left-0 right-0 z-50 h-16">
       <div className="px-4 py-3 h-full">
         <div className="flex items-center justify-between h-full">
           {/* Left side - Logo + Page Title */}
