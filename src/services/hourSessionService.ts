@@ -2,11 +2,11 @@
 import { apiClient } from './api';
 
 export interface HourSessionData {
-  date: string; // formato YYYY-MM-DD
+  date: string; // formato YYYY/MM/DD (cambiado de YYYY-MM-DD)
   start_time: string; // formato H:i (ej: "09:00")
   end_time: string; // formato H:i (ej: "17:00")
   planned_hours: number; // mínimo 2
-  work_type?: string;
+  work_type?: string; // valores: 'normal', 'overtime', 'is_holiday'
 }
 
 interface HourSessionResponse {
