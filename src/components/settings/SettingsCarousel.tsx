@@ -41,7 +41,7 @@ const SettingsCarousel = ({
       id: 'account',
       title: 'Gestión de Cuenta',
       content: (
-        <div className="space-y-2 h-full overflow-y-auto">
+        <div className="space-y-4 h-full overflow-y-auto pr-2">
           <UpdateEmailCard 
             onUpdateEmail={onUpdateEmail}
             isLoading={isEmailLoading}
@@ -89,7 +89,7 @@ const SettingsCarousel = ({
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between mb-2 flex-shrink-0">
+                <div className="flex items-center justify-between mb-3 flex-shrink-0">
                   <h2 className="text-lg font-bold text-white">{slide.title}</h2>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-400">
