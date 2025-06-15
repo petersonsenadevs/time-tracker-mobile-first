@@ -41,7 +41,7 @@ const SettingsCarousel = ({
       id: 'account',
       title: 'Gestión de Cuenta',
       content: (
-        <div className="flex flex-col gap-1.5 h-full">
+        <div className="space-y-2 h-full overflow-y-auto">
           <UpdateEmailCard 
             onUpdateEmail={onUpdateEmail}
             isLoading={isEmailLoading}
@@ -64,7 +64,9 @@ const SettingsCarousel = ({
       id: 'customization',
       title: 'Personalización',
       content: (
-        <CustomizationCard />
+        <div className="h-full overflow-y-auto">
+          <CustomizationCard />
+        </div>
       )
     },
     {
@@ -81,7 +83,7 @@ const SettingsCarousel = ({
   ];
 
   return (
-    <div className="h-full max-h-[calc(100vh-160px)] lg:max-h-[calc(100vh-120px)]">
+    <div className="h-full max-h-[calc(100vh-140px)] lg:max-h-[calc(100vh-100px)]">
       <Carousel className="w-full h-full">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
@@ -105,7 +107,7 @@ const SettingsCarousel = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 min-h-0 max-h-[calc(100vh-220px)] lg:max-h-[calc(100vh-180px)] overflow-hidden">
+                <div className="flex-1 min-h-0 max-h-[calc(100vh-200px)] lg:max-h-[calc(100vh-160px)]">
                   {slide.content}
                 </div>
               </div>

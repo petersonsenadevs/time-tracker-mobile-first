@@ -26,17 +26,17 @@ const UpdateEmailCard = ({ onUpdateEmail, isLoading }: UpdateEmailCardProps) => 
   };
 
   return (
-    <Card className="bg-gray-900/50 border-gray-700 flex-shrink-0">
-      <CardHeader className="pb-2">
+    <Card className="bg-gray-900/50 border-gray-700">
+      <CardHeader className="pb-1.5 pt-3 px-3">
         <CardTitle className="flex items-center gap-2 text-white text-sm">
           <Mail className="h-3 w-3 text-teal-400" />
           Actualizar Email
         </CardTitle>
-        <CardDescription className="text-xs">
+        <CardDescription className="text-xs text-gray-400">
           Cambia tu dirección de correo electrónico
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 px-3 pb-3">
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
             <Label htmlFor="email" className="text-gray-300 text-xs">Nuevo Email</Label>
@@ -46,7 +46,7 @@ const UpdateEmailCard = ({ onUpdateEmail, isLoading }: UpdateEmailCardProps) => 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nuevo@email.com"
-              className="bg-gray-800 border-gray-600 text-white text-xs h-7"
+              className="bg-gray-800 border-gray-600 text-white text-xs h-7 mt-0.5"
               required
             />
           </div>
