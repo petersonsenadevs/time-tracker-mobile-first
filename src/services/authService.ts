@@ -53,11 +53,11 @@ interface DashboardResponse {
   };
 }
 
-// Tipo para la respuesta actual (para compatibilidad)
-interface LegacyDashboardResponse {
-  total_hours_worked: string; // Formato "H:M" como "0:0"
-  current_month_salary: string; // Formato "0.00"
-  count_hour_session_day: number; // Nuevo campo
+// Tipo para la respuesta actual del endpoint
+interface ApiDashboardResponse {
+  total_hours_worked: string; // Formato "H:M" como "16:0"
+  current_month_salary: string; // Formato "211.20"
+  count_hour_session_day: number; // Campo de días trabajados
   user?: {
     id: number;
     name: string;
@@ -127,43 +127,38 @@ export const authService = {
 
   async verifyDashboardAccess(token: string): Promise<DashboardResponse> {
     try {
-      const response = await apiClient.getWithAuth<DashboardResponse | LegacyDashboardResponse>('/api/dashboard', token);
-      console.log('Dashboard API response:', response);
-      
-      // Verificar si es la respuesta nueva con la estructura correcta
-      if ('dashboardData' in response && 'message' in response) {
-        return response as DashboardResponse;
-      }
-      
-      // Si es la respuesta legacy, convertirla al nuevo formato
-      const legacyResponse = response as LegacyDashboardResponse;
+      const response = await apiClient.getWithAuth<ApiDashboardResponse>('/api/dashboard', token);
+      console.log('Dashboard API response raw:', response);
       
       // Convertir el formato de tiempo "H:M" a decimal de horas
-      const totalHoursWorked = convertTimeToHours(legacyResponse.total_hours_worked);
+      const totalHoursWorked = convertTimeToHours(response.total_hours_worked);
       
       // Convertir el salario string a number
-      const currentMonthSalary = parseFloat(legacyResponse.current_month_salary) || 0;
+      const currentMonthSalary = parseFloat(response.current_month_salary) || 0;
       
-      // Obtener el conteo de días trabajados
-      const countHourSessionDay = legacyResponse.count_hour_session_day || 0;
+      // Obtener el conteo de días trabajados directamente del campo
+      const countHourSessionDay = response.count_hour_session_day || 0;
       
-      console.log('Converted legacy data:', {
+      console.log('Converted dashboard data:', {
         totalHoursWorked,
         currentMonthSalary,
         countHourSessionDay,
-        originalTime: legacyResponse.total_hours_worked,
-        originalSalary: legacyResponse.current_month_salary
+        originalTime: response.total_hours_worked,
+        originalSalary: response.current_month_salary,
+        originalDays: response.count_hour_session_day
       });
+      
+      const dashboardData: DashboardData = {
+        totalHoursWorked,
+        currentMonthSalary,
+        countHourSessionDay,
+        dailyWorkHours: []
+      };
       
       return {
         message: "Dashboard retrieved successfully",
-        dashboardData: {
-          totalHoursWorked,
-          currentMonthSalary,
-          countHourSessionDay,
-          dailyWorkHours: []
-        },
-        user: legacyResponse.user
+        dashboardData,
+        user: response.user
       };
     } catch (error) {
       console.error('Dashboard verification error:', error);
