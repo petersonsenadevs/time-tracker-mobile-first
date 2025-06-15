@@ -57,7 +57,7 @@ const SalaryInfoCard = ({ employee, isLoadingEmployee }: SalaryInfoCardProps) =>
                 <Moon className="h-6 w-6 text-purple-400" />
                 <div>
                   <p className="text-sm text-gray-400">Tarifa de Horas Nocturnas</p>
-                  <p className="text-white font-bold text-xl">€{employee.night_hourly_rate || employee.normal_hourly_rate}</p>
+                  <p className="text-white font-bold text-xl">€{(employee as any).night_hourly_rate || employee.normal_hourly_rate}</p>
                 </div>
               </div>
 
