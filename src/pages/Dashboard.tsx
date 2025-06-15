@@ -19,6 +19,10 @@ const Dashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
+  // Log para debuggear los datos del dashboard
+  console.log('Dashboard - dashboardStats:', dashboardStats);
+  console.log('Dashboard - countHourSessionDay específicamente:', dashboardStats?.countHourSessionDay);
+
   const { data: userInfo } = useQuery({
     queryKey: ['user', token],
     queryFn: () => userService.showUser(token!),
@@ -69,6 +73,7 @@ const Dashboard = () => {
         console.log('Datos del dashboard actualizados:', dashboardData);
         
         if (dashboardData.dashboardData) {
+          console.log('Estableciendo nuevos dashboardStats:', dashboardData.dashboardData);
           setDashboardStats(dashboardData.dashboardData);
         }
       }

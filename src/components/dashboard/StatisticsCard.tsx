@@ -15,6 +15,10 @@ interface StatisticsCardProps {
 }
 
 const StatisticsCard = ({ employee, dashboardStats }: StatisticsCardProps) => {
+  // Log para debuggear los datos en StatisticsCard
+  console.log('StatisticsCard - dashboardStats:', dashboardStats);
+  console.log('StatisticsCard - countHourSessionDay:', dashboardStats?.countHourSessionDay);
+  
   return (
     <Card className="bg-gray-900/50 border-gray-700 h-full">
       <CardHeader>

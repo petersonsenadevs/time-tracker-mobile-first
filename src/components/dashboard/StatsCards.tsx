@@ -11,6 +11,10 @@ interface StatsCardsProps {
 }
 
 const StatsCards = ({ dashboardStats }: StatsCardsProps) => {
+  // Log para debuggear los datos en StatsCards
+  console.log('StatsCards - dashboardStats:', dashboardStats);
+  console.log('StatsCards - countHourSessionDay:', dashboardStats?.countHourSessionDay);
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
       <div className="bg-gradient-to-br from-teal-500/20 to-teal-600/10 border-teal-500/30 rounded-lg border p-4">
