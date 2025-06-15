@@ -13,14 +13,13 @@ import BottomNavBar from '@/components/BottomNavBar';
 
 const WorkDays = () => {
   const { token } = useAuth();
-  const [searchDate, setSearchDate] = useState<string>(format(new Date(), 'yyyyMMdd'));
-  const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyyMMdd'));
+  const [searchDate, setSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+  const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
 
   const { data: workSessionData, isLoading, error } = useQuery({
     queryKey: ['workSessions', currentSearchDate, token],
     queryFn: () => {
-      const formattedDate = `${currentSearchDate.slice(0, 4)}-${currentSearchDate.slice(4, 6)}-${currentSearchDate.slice(6, 8)}`;
-      return workSessionService.getWorkSessions(formattedDate, token!);
+      return workSessionService.getWorkSessions(currentSearchDate, token!);
     },
     enabled: !!token && !!currentSearchDate,
   });
@@ -28,9 +27,22 @@ const WorkDays = () => {
   const workSessions = workSessionData?.hour_session_with_hour_worked || [];
 
   const handleSearch = () => {
-    if (searchDate.length === 8 && /^\d{8}$/.test(searchDate)) {
+    if (searchDate && searchDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
       setCurrentSearchDate(searchDate);
     }
+  };
+
+  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ''); // Solo números
+    
+    if (value.length >= 4) {
+      value = value.substring(0, 4) + '-' + value.substring(4);
+    }
+    if (value.length >= 7) {
+      value = value.substring(0, 7) + '-' + value.substring(7, 9);
+    }
+    
+    setSearchDate(value);
   };
 
   const formatTime = (time: string) => {
@@ -42,17 +54,12 @@ const WorkDays = () => {
   };
 
   const formatDateForDisplay = (dateString: string) => {
-    const year = dateString.slice(0, 4);
-    const month = dateString.slice(4, 6);
-    const day = dateString.slice(6, 8);
+    const [year, month, day] = dateString.split('-');
     return `${day}/${month}/${year}`;
   };
 
   const formatDateWithDayName = (dateString: string) => {
-    const year = dateString.slice(0, 4);
-    const month = dateString.slice(4, 6);
-    const day = dateString.slice(6, 8);
-    const date = new Date(`${year}-${month}-${day}`);
+    const date = new Date(dateString);
     return format(date, 'EEEE, d MMMM yyyy', { locale: es });
   };
 
@@ -87,16 +94,16 @@ const WorkDays = () => {
             <div className="flex gap-4 items-end">
               <div className="flex-1">
                 <label htmlFor="date-search" className="block text-sm font-medium text-gray-300 mb-2">
-                  Fecha (YYYYMMDD)
+                  Fecha (YYYY-MM-DD)
                 </label>
                 <Input
                   id="date-search"
                   type="text"
-                  placeholder="20250615"
+                  placeholder="2025-06-15"
                   value={searchDate}
-                  onChange={(e) => setSearchDate(e.target.value)}
+                  onChange={handleDateInputChange}
                   className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:ring-teal-400 focus:border-teal-400"
-                  maxLength={8}
+                  maxLength={10}
                 />
               </div>
               <Button 
