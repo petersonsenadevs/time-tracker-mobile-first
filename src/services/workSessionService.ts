@@ -23,9 +23,8 @@ export interface WorkSessionResponse {
 
 class WorkSessionService {
   async getWorkSessions(date: string, token: string): Promise<WorkSessionResponse> {
-    // Convertir la fecha al formato yyyymmdd
-    const formattedDate = date.replace(/-/g, '');
-    return apiClient.getWithAuth<WorkSessionResponse>(`/api/session_worked?date=${formattedDate}`, token);
+    // La fecha ya viene en formato yyyy-mm-dd desde el componente
+    return apiClient.getWithAuth<WorkSessionResponse>(`/api/session_worked?date=${date}`, token);
   }
 }
 
