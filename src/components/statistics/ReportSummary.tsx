@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, Calendar, TrendingUp } from 'lucide-react';
+import { Clock, Calendar, TrendingUp, Moon } from 'lucide-react';
 import { MonthlyReportData } from '@/services/reportService';
 
 interface ReportSummaryProps {
@@ -23,7 +23,7 @@ const ReportSummary = ({ reportData }: ReportSummaryProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className={`text-center p-4 rounded-lg border ${
             hasData 
               ? 'bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30'
@@ -58,6 +58,18 @@ const ReportSummary = ({ reportData }: ReportSummaryProps) => {
               {formatHours(reportData.totalHolidayHours.hours, reportData.totalHolidayHours.minutes)}
             </div>
             <div className="text-gray-400 text-sm">Horas Festivas</div>
+          </div>
+
+          <div className={`text-center p-4 rounded-lg border ${
+            hasData 
+              ? 'bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-purple-500/30'
+              : 'bg-gradient-to-br from-gray-600/10 to-gray-700/10 border-gray-600/20'
+          }`}>
+            <Moon className={`h-8 w-8 mx-auto mb-2 ${hasData ? 'text-purple-400' : 'text-gray-500'}`} />
+            <div className={`text-2xl font-bold mb-1 ${hasData ? 'text-white' : 'text-gray-500'}`}>
+              {formatHours(reportData.totalNightHours.hours, reportData.totalNightHours.minutes)}
+            </div>
+            <div className="text-gray-400 text-sm">Horas Nocturnas</div>
           </div>
 
           <div className={`text-center p-4 rounded-lg border ${
