@@ -13,7 +13,7 @@ import { LoadingState, ErrorState, EmptyState } from '@/components/workdays/Work
 
 const WorkDays = () => {
   const { token } = useAuth();
-  const [searchDate, setSearchDate] = useState<string>(format(new Date(), 'dd/MM/yyyy'));
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null);
 
@@ -28,24 +28,19 @@ const WorkDays = () => {
   const workSessions = workSessionData?.hour_session_with_hour_worked || [];
 
   const handleSearch = () => {
-    if (searchDate && searchDate.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
-      const [day, month, year] = searchDate.split('/');
-      const formattedDate = `${year}-${month}-${day}`;
+    if (selectedDate) {
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       setCurrentSearchDate(formattedDate);
     }
   };
 
-  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, ''); // Solo números
-    
-    if (value.length >= 2) {
-      value = value.substring(0, 2) + '/' + value.substring(2);
+  const handleDateChange = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+      // Auto-search when date is selected
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      setCurrentSearchDate(formattedDate);
     }
-    if (value.length >= 5) {
-      value = value.substring(0, 5) + '/' + value.substring(5, 9);
-    }
-    
-    setSearchDate(value);
   };
 
   return (
@@ -57,8 +52,8 @@ const WorkDays = () => {
         />
 
         <WorkDaysSearch
-          searchDate={searchDate}
-          onSearchDateChange={handleDateInputChange}
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
           onSearch={handleSearch}
         />
 

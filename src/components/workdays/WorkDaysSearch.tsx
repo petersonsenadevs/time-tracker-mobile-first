@@ -1,17 +1,21 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface WorkDaysSearchProps {
-  searchDate: string;
-  onSearchDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedDate: Date;
+  onDateChange: (date: Date | undefined) => void;
   onSearch: () => void;
 }
 
-const WorkDaysSearch = ({ searchDate, onSearchDateChange, onSearch }: WorkDaysSearchProps) => {
+const WorkDaysSearch = ({ selectedDate, onDateChange, onSearch }: WorkDaysSearchProps) => {
   return (
     <Card className="bg-gradient-to-r from-gray-900 to-gray-800 border-gray-700 mb-8">
       <CardHeader>
@@ -24,17 +28,37 @@ const WorkDaysSearch = ({ searchDate, onSearchDateChange, onSearch }: WorkDaysSe
         <div className="flex gap-4 items-end">
           <div className="flex-1">
             <label htmlFor="date-search" className="block text-sm font-medium text-gray-300 mb-2">
-              Fecha (DD/MM/YYYY)
+              Selecciona una fecha
             </label>
-            <Input
-              id="date-search"
-              type="text"
-              placeholder="15/06/2025"
-              value={searchDate}
-              onChange={onSearchDateChange}
-              className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:ring-teal-400 focus:border-teal-400"
-              maxLength={10}
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date-search"
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:text-white",
+                    !selectedDate && "text-gray-400"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4 text-teal-400" />
+                  {selectedDate ? (
+                    format(selectedDate, "EEEE, d 'de' MMMM 'de' yyyy", { locale: es })
+                  ) : (
+                    <span>Selecciona una fecha</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-gray-900 border-gray-700" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={onDateChange}
+                  initialFocus
+                  locale={es}
+                  className={cn("p-3 pointer-events-auto bg-gray-900 text-white")}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
           <Button 
             onClick={onSearch}
