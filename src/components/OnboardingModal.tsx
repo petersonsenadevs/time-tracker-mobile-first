@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogOverlay, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface OnboardingModalProps {
@@ -15,6 +15,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   console.log('OnboardingModal - isOpen:', isOpen);
+  console.log('OnboardingModal - currentStep:', currentStep);
 
   const steps = [
     {
@@ -38,17 +39,23 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   ];
 
   const nextStep = () => {
+    console.log('Intentando ir al siguiente paso, currentStep actual:', currentStep);
     if (currentStep < steps.length - 1) {
       triggerGlitch(() => {
-        setCurrentStep(prev => prev + 1);
+        const newStep = currentStep + 1;
+        console.log('Cambiando a paso:', newStep);
+        setCurrentStep(newStep);
       });
     }
   };
 
   const prevStep = () => {
+    console.log('Intentando ir al paso anterior, currentStep actual:', currentStep);
     if (currentStep > 0) {
       triggerGlitch(() => {
-        setCurrentStep(prev => prev - 1);
+        const newStep = currentStep - 1;
+        console.log('Cambiando a paso:', newStep);
+        setCurrentStep(newStep);
       });
     }
   };
@@ -100,35 +107,40 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
-      <DialogContent className="max-w-4xl w-[90%] h-[75vh] bg-gray-900 border-gray-700 p-0 overflow-hidden rounded-xl">
+      <DialogContent className="max-w-5xl w-[95%] h-[85vh] bg-gray-900 border-gray-700 p-0 overflow-hidden rounded-xl">
+        <DialogTitle className="sr-only">Tutorial de TimeTracker</DialogTitle>
+        <DialogDescription className="sr-only">
+          Aprende a usar la aplicación TimeTracker con este tutorial interactivo
+        </DialogDescription>
+        
         {/* Header */}
-        <div className="relative p-4 border-b border-gray-700 bg-gray-800/50">
+        <div className="relative p-6 border-b border-gray-700 bg-gray-800/50">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-white">Bienvenido a TimeTracker</h2>
-              <p className="text-gray-400 text-sm">Descubre cómo usar la aplicación</p>
+              <h2 className="text-xl font-bold text-white">Bienvenido a TimeTracker</h2>
+              <p className="text-gray-400 text-sm mt-1">Descubre cómo usar la aplicación</p>
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-white transition-colors p-1"
+              className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded-lg"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
           
           {/* Progress Bar */}
-          <div className="mt-3">
-            <div className="flex space-x-1">
+          <div className="mt-4">
+            <div className="flex space-x-2">
               {steps.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  className={`h-2 flex-1 rounded-full transition-all duration-300 ${
                     index <= currentStep ? 'bg-teal-400' : 'bg-gray-600'
                   }`}
                 />
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-gray-400">
+            <div className="flex justify-between mt-3 text-sm text-gray-400">
               <span>Paso {currentStep + 1} de {steps.length}</span>
               <span>{Math.round(((currentStep + 1) / steps.length) * 100)}% completado</span>
             </div>
@@ -138,7 +150,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
         {/* Content */}
         <div className="flex-1 flex overflow-hidden">
           {/* Image Section */}
-          <div className="w-2/5 relative bg-black flex items-center justify-center p-4">
+          <div className="w-2/5 relative bg-black flex items-center justify-center p-6">
             <div 
               className={`relative w-full h-full flex items-center justify-center transition-all duration-300 ${
                 isGlitching ? 'transform scale-105 brightness-50 hue-rotate-180' : 'transform scale-100'
@@ -160,38 +172,38 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
           </div>
 
           {/* Content Section */}
-          <div className="w-3/5 p-6 flex flex-col justify-between">
-            <div className="flex-1">
-              <h3 className={`text-xl font-bold mb-3 transition-all duration-300 ${
+          <div className="w-3/5 p-8 flex flex-col justify-between">
+            <div className="flex-1 space-y-6">
+              <h3 className={`text-2xl font-bold mb-4 transition-all duration-300 ${
                 isGlitching ? 'transform translate-x-2 text-teal-400' : 'transform translate-x-0 text-white'
               }`}>
                 {currentStepData.title}
               </h3>
               
-              <p className={`text-sm text-gray-300 mb-4 leading-relaxed transition-all duration-300 ${
+              <p className={`text-base text-gray-300 leading-relaxed transition-all duration-300 ${
                 isGlitching ? 'opacity-50' : 'opacity-100'
               }`}>
                 {currentStepData.description}
               </p>
 
-              <div className="space-y-2">
-                <h4 className="text-base font-semibold text-teal-400 mb-2">Características principales:</h4>
+              <div className="space-y-3">
+                <h4 className="text-lg font-semibold text-teal-400 mb-3">Características principales:</h4>
                 {currentStepData.features.map((feature, index) => (
                   <div 
                     key={index}
-                    className={`flex items-center space-x-2 transition-all duration-300 ${
+                    className={`flex items-center space-x-3 transition-all duration-300 ${
                       isGlitching ? 'transform -translate-x-2' : 'transform translate-x-0'
                     }`}
                   >
-                    <div className="w-1.5 h-1.5 bg-teal-400 rounded-full flex-shrink-0" />
-                    <span className="text-gray-200 text-sm">{feature}</span>
+                    <div className="w-2 h-2 bg-teal-400 rounded-full flex-shrink-0" />
+                    <span className="text-gray-200 text-base">{feature}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Checkbox */}
-            <div className="flex items-center space-x-2 mb-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center space-x-3 py-4 border-t border-gray-700">
               <Checkbox 
                 id="dont-show-again"
                 checked={dontShowAgain}
@@ -207,14 +219,14 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-4">
               <button
                 onClick={prevStep}
                 disabled={currentStep === 0}
-                className={`flex items-center space-x-1 px-3 py-2 rounded-lg text-sm transition-all duration-300 ${
+                className={`flex items-center space-x-2 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                   currentStep === 0 
                     ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
-                    : 'bg-gray-700 text-white hover:bg-gray-600'
+                    : 'bg-gray-700 text-white hover:bg-gray-600 transform hover:scale-105'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -223,7 +235,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
 
               <button
                 onClick={handleSkip}
-                className="text-gray-400 hover:text-white transition-colors text-sm"
+                className="text-gray-400 hover:text-white transition-colors text-sm font-medium"
               >
                 Saltar tutorial
               </button>
@@ -231,14 +243,14 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
               {currentStep === steps.length - 1 ? (
                 <button
                   onClick={handleFinish}
-                  className="bg-teal-500 hover:bg-teal-600 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105"
+                  className="bg-teal-500 hover:bg-teal-600 text-black font-semibold px-6 py-3 rounded-lg text-sm transition-all duration-300 transform hover:scale-105"
                 >
                   ¡Comenzar!
                 </button>
               ) : (
                 <button
                   onClick={nextStep}
-                  className="flex items-center space-x-1 bg-teal-500 hover:bg-teal-600 text-black font-semibold px-3 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105"
+                  className="flex items-center space-x-2 bg-teal-500 hover:bg-teal-600 text-black font-semibold px-4 py-3 rounded-lg text-sm transition-all duration-300 transform hover:scale-105"
                 >
                   <span>Siguiente</span>
                   <ChevronRight className="w-4 h-4" />
