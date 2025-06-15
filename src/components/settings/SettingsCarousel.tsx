@@ -5,7 +5,6 @@ import UpdateEmailCard from './UpdateEmailCard';
 import ChangePasswordCard from './ChangePasswordCard';
 import DangerZoneCard from './DangerZoneCard';
 import NotificationsCard from './NotificationsCard';
-import CustomizationCard from './CustomizationCard';
 import { Employee, UpdateEmailData, ChangePasswordData } from '@/services/userService';
 
 interface SettingsCarouselProps {
@@ -58,13 +57,6 @@ const SettingsCarousel = ({
       title: 'Notificaciones',
       content: (
         <NotificationsCard />
-      )
-    },
-    {
-      id: 'customization',
-      title: 'Personalización',
-      content: (
-        <CustomizationCard />
       )
     },
     {
