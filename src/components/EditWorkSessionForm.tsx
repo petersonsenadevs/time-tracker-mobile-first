@@ -46,11 +46,36 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
   });
 
   const updateSessionMutation = useMutation({
-    mutationFn: async (data: UpdateHourSessionData) => {
+    mutationFn: async (formData: EditWorkSessionFormData) => {
       if (!token) throw new Error('No hay token de autenticación');
-      return await updateWorkSessionService.updateHourSession(data, session.date, token);
+      
+      console.log('Form data being sent:', formData);
+      
+      const plannedHoursNum = parseInt(formData.planned_hours);
+      if (plannedHoursNum < 2) {
+        throw new Error('Las horas planificadas deben ser mínimo 2');
+      }
+
+      const workTypeMap: Record<string, string> = {
+        'NORMAL': 'is_normal',
+        'OVERTIME': 'is_overtime', 
+        'HOLIDAY': 'is_holiday'
+      };
+
+      const updateData: UpdateHourSessionData = {
+        date: session.date,
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+        planned_hours: plannedHoursNum,
+        work_type: formData.work_type ? workTypeMap[formData.work_type] : 'is_normal',
+      };
+
+      console.log('Update data being sent to API:', updateData);
+      
+      return await updateWorkSessionService.updateHourSession(updateData, session.date, token);
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      console.log('Update response:', response);
       toast.success('Sesión actualizada exitosamente');
       queryClient.invalidateQueries({ queryKey: ['workSessions'] });
       onClose();
@@ -62,6 +87,8 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
   });
 
   const handleSubmit = (data: EditWorkSessionFormData) => {
+    console.log('Form submitted with data:', data);
+    
     const plannedHoursNum = parseInt(data.planned_hours);
     if (plannedHoursNum < 2) {
       form.setError('planned_hours', {
@@ -71,21 +98,7 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
       return;
     }
 
-    const workTypeMap: Record<string, string> = {
-      'NORMAL': 'is_normal',
-      'OVERTIME': 'is_overtime', 
-      'HOLIDAY': 'is_holiday'
-    };
-
-    const updateData: UpdateHourSessionData = {
-      date: session.date,
-      start_time: data.start_time,
-      end_time: data.end_time,
-      planned_hours: plannedHoursNum,
-      work_type: data.work_type ? workTypeMap[data.work_type] : 'is_normal',
-    };
-
-    updateSessionMutation.mutate(updateData);
+    updateSessionMutation.mutate(data);
   };
 
   if (!isOpen) return null;
@@ -187,28 +200,28 @@ const EditWorkSessionForm = ({ session, isOpen, onClose }: EditWorkSessionFormPr
                   </FormItem>
                 )}
               />
+
+              {/* Footer - Dentro del form para que el submit funcione */}
+              <div className="flex gap-3 pt-4 border-t border-gray-700">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={onClose}
+                  className="flex-1 text-gray-300 hover:text-white hover:bg-gray-800"
+                  disabled={updateSessionMutation.isPending}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1 bg-teal-500 hover:bg-teal-600 text-black font-semibold"
+                  disabled={updateSessionMutation.isPending}
+                >
+                  {updateSessionMutation.isPending ? 'Guardando...' : 'Guardar'}
+                </Button>
+              </div>
             </form>
           </Form>
-        </div>
-
-        {/* Footer */}
-        <div className="flex gap-3 p-6 border-t border-gray-700">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            className="flex-1 text-gray-300 hover:text-white hover:bg-gray-800"
-            disabled={updateSessionMutation.isPending}
-          >
-            Cancelar
-          </Button>
-          <Button
-            onClick={form.handleSubmit(handleSubmit)}
-            className="flex-1 bg-teal-500 hover:bg-teal-600 text-black font-semibold"
-            disabled={updateSessionMutation.isPending}
-          >
-            {updateSessionMutation.isPending ? 'Guardando...' : 'Guardar'}
-          </Button>
         </div>
       </div>
     </div>
