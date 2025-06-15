@@ -14,9 +14,9 @@ const BottomNavBar = () => {
     },
     {
       icon: BarChart3,
-      label: 'Reportes',
-      path: '/reports',
-      isActive: location.pathname === '/reports'
+      label: 'Estadísticas',
+      path: '/statistics',
+      isActive: location.pathname === '/statistics'
     },
     {
       icon: Home,
