@@ -2,6 +2,8 @@
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { es } from 'date-fns/locale';
 import { format, isToday } from 'date-fns';
@@ -15,6 +17,7 @@ interface CalendarSectionProps {
 
 const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarSectionProps) => {
   const [month, setMonth] = useState<Date>(selectedDate);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
@@ -54,6 +57,20 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
     return nextMonth.getFullYear() <= today.getFullYear() && 
            (nextMonth.getFullYear() < today.getFullYear() || nextMonth.getMonth() <= today.getMonth());
   };
+
+  const handleMonthYearChange = (newMonth: number, newYear: number) => {
+    const newDate = new Date(newYear, newMonth, 1);
+    setMonth(newDate);
+    setIsDatePickerOpen(false);
+  };
+
+  const months = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
 
   return (
     <Card className="bg-gray-900/50 border-gray-700">
@@ -95,9 +112,81 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
               <ChevronLeft className="h-5 w-5" />
             </Button>
             
-            <h3 className="text-white font-semibold text-lg capitalize">
-              {format(month, "MMMM yyyy", { locale: es })}
-            </h3>
+            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="text-white font-semibold text-lg capitalize hover:bg-gray-700 px-4 py-2"
+                >
+                  {format(month, "MMMM yyyy", { locale: es })}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4 bg-gray-800 border-gray-600" align="center">
+                <div className="space-y-4">
+                  <div className="text-center text-white font-medium">
+                    Seleccionar mes y año
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Mes</label>
+                      <Select
+                        value={month.getMonth().toString()}
+                        onValueChange={(value) => handleMonthYearChange(parseInt(value), month.getFullYear())}
+                      >
+                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-700 border-gray-600">
+                          {months.map((monthName, index) => (
+                            <SelectItem 
+                              key={index} 
+                              value={index.toString()}
+                              className="text-white hover:bg-gray-600"
+                            >
+                              {monthName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-300">Año</label>
+                      <Select
+                        value={month.getFullYear().toString()}
+                        onValueChange={(value) => handleMonthYearChange(month.getMonth(), parseInt(value))}
+                      >
+                        <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-gray-700 border-gray-600">
+                          {years.map((year) => (
+                            <SelectItem 
+                              key={year} 
+                              value={year.toString()}
+                              className="text-white hover:bg-gray-600"
+                            >
+                              {year}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-center pt-2">
+                    <Button
+                      size="sm"
+                      onClick={() => setIsDatePickerOpen(false)}
+                      className="bg-teal-500 hover:bg-teal-600 text-black"
+                    >
+                      Confirmar
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             
             <Button
               variant="ghost"
