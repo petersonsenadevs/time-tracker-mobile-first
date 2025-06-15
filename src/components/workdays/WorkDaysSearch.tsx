@@ -82,10 +82,10 @@ const WorkDaysSearch = ({ selectedDate, onDateChange, onSearch }: WorkDaysSearch
           </div>
           <Button 
             onClick={onSearch}
-            className="bg-teal-500 hover:bg-teal-600 text-white px-6"
+            size="icon"
+            className="bg-teal-500 hover:bg-teal-600 text-white h-10 w-10 flex-shrink-0"
           >
-            <Search className="h-4 w-4 mr-2" />
-            Buscar
+            <Search className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>
