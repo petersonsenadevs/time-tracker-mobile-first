@@ -1,6 +1,5 @@
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import PersonalInfoCard from './PersonalInfoCard';
 import UpdateEmailCard from './UpdateEmailCard';
 import ChangePasswordCard from './ChangePasswordCard';
@@ -42,18 +41,16 @@ const SettingsCarousel = ({
       id: 'account',
       title: 'Gestión de Cuenta',
       content: (
-        <ScrollArea className="h-full pr-2">
-          <div className="space-y-6 pb-4">
-            <UpdateEmailCard 
-              onUpdateEmail={onUpdateEmail}
-              isLoading={isEmailLoading}
-            />
-            <ChangePasswordCard 
-              onChangePassword={onChangePassword}
-              isLoading={isPasswordLoading}
-            />
-          </div>
-        </ScrollArea>
+        <div className="space-y-6">
+          <UpdateEmailCard 
+            onUpdateEmail={onUpdateEmail}
+            isLoading={isEmailLoading}
+          />
+          <ChangePasswordCard 
+            onChangePassword={onChangePassword}
+            isLoading={isPasswordLoading}
+          />
+        </div>
       )
     },
     {
@@ -67,9 +64,7 @@ const SettingsCarousel = ({
       id: 'customization',
       title: 'Personalización',
       content: (
-        <ScrollArea className="h-full">
-          <CustomizationCard />
-        </ScrollArea>
+        <CustomizationCard />
       )
     },
     {
@@ -86,23 +81,23 @@ const SettingsCarousel = ({
   ];
 
   return (
-    <div className="h-full max-h-[calc(100vh-140px)] lg:max-h-[calc(100vh-100px)]">
+    <div className="h-full lg:h-[calc(100vh-200px)]">
       <Carousel className="w-full h-full">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between mb-3 flex-shrink-0">
-                  <h2 className="text-lg font-bold text-white">{slide.title}</h2>
+                <div className="flex items-center justify-between mb-4 sm:mb-6 flex-shrink-0">
+                  <h2 className="text-xl font-bold text-white">{slide.title}</h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-sm text-gray-400">
                       {index + 1} de {slides.length}
                     </span>
                     <div className="flex gap-1">
                       {slides.map((_, i) => (
                         <div
                           key={i}
-                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                          className={`w-2 h-2 rounded-full transition-colors ${
                             i === index ? 'bg-teal-400' : 'bg-gray-600'
                           }`}
                         />
@@ -110,15 +105,15 @@ const SettingsCarousel = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 overflow-y-auto">
                   {slide.content}
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6" />
-        <CarouselNext className="right-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700 h-6 w-6" />
+        <CarouselPrevious className="left-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        <CarouselNext className="right-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
       </Carousel>
     </div>
   );

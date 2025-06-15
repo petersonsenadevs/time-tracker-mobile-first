@@ -26,28 +26,28 @@ const CustomizationCard = () => {
   ];
 
   return (
-    <div className="space-y-2 h-full overflow-hidden flex flex-col">
+    <div className="space-y-6">
       {/* Tema */}
-      <Card className="bg-gray-900/50 border-gray-700 flex-shrink-0">
-        <CardHeader className="pb-1">
-          <CardTitle className="flex items-center gap-2 text-white text-sm">
-            <Palette className="h-3 w-3 text-teal-400" />
-            Tema
+      <Card className="bg-gray-900/50 border-gray-700">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Palette className="h-5 w-5 text-teal-400" />
+            Tema de la Aplicación
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 pb-2">
-          <div className="grid grid-cols-2 gap-1.5">
+        <CardContent>
+          <div className="grid grid-cols-2 gap-3">
             {themes.map((themeOption) => (
               <button
                 key={themeOption.id}
                 onClick={() => setTheme(themeOption.id)}
-                className={`p-1.5 rounded-lg border transition-all flex items-center gap-1.5 text-xs ${
+                className={`p-4 rounded-lg border-2 transition-all flex items-center gap-2 ${
                   theme === themeOption.id
                     ? 'border-teal-400 bg-teal-400/10'
                     : 'border-gray-600 hover:border-gray-500'
                 }`}
               >
-                <themeOption.icon className="h-3 w-3 text-white" />
+                <themeOption.icon className="h-5 w-5 text-white" />
                 <span className="text-white font-medium">{themeOption.name}</span>
               </button>
             ))}
@@ -56,20 +56,20 @@ const CustomizationCard = () => {
       </Card>
 
       {/* Idioma */}
-      <Card className="bg-gray-900/50 border-gray-700 flex-shrink-0">
-        <CardHeader className="pb-1">
-          <CardTitle className="flex items-center gap-2 text-white text-sm">
-            <Globe className="h-3 w-3 text-teal-400" />
+      <Card className="bg-gray-900/50 border-gray-700">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Globe className="h-5 w-5 text-teal-400" />
             Idioma
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 pb-2">
-          <div className="space-y-1">
+        <CardContent>
+          <div className="space-y-2">
             {languages.map((lang) => (
               <button
                 key={lang.id}
                 onClick={() => setLanguage(lang.id)}
-                className={`w-full p-1.5 rounded-lg border transition-all text-left text-xs ${
+                className={`w-full p-3 rounded-lg border transition-all text-left ${
                   language === lang.id
                     ? 'border-teal-400 bg-teal-400/10 text-teal-300'
                     : 'border-gray-600 hover:border-gray-500 text-white'
@@ -83,20 +83,20 @@ const CustomizationCard = () => {
       </Card>
 
       {/* Formato de Fecha */}
-      <Card className="bg-gray-900/50 border-gray-700 flex-1 min-h-0 overflow-hidden">
-        <CardHeader className="pb-1">
-          <CardTitle className="flex items-center gap-2 text-white text-sm">
-            <Calendar className="h-3 w-3 text-teal-400" />
+      <Card className="bg-gray-900/50 border-gray-700">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Calendar className="h-5 w-5 text-teal-400" />
             Formato de Fecha
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 pb-2 h-full flex flex-col">
-          <div className="space-y-1 flex-1 min-h-0 overflow-y-auto">
+        <CardContent>
+          <div className="space-y-2">
             {dateFormats.map((format) => (
               <button
                 key={format.id}
                 onClick={() => setDateFormat(format.id)}
-                className={`w-full p-1.5 rounded-lg border transition-all text-left text-xs ${
+                className={`w-full p-3 rounded-lg border transition-all text-left ${
                   dateFormat === format.id
                     ? 'border-teal-400 bg-teal-400/10 text-teal-300'
                     : 'border-gray-600 hover:border-gray-500 text-white'
@@ -109,11 +109,14 @@ const CustomizationCard = () => {
               </button>
             ))}
           </div>
-          <Button className="bg-teal-600 hover:bg-teal-700 text-white mt-2 h-7 text-xs">
-            Guardar Configuración
-          </Button>
         </CardContent>
       </Card>
+
+      <div className="flex justify-end">
+        <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+          Guardar Configuración
+        </Button>
+      </div>
     </div>
   );
 };

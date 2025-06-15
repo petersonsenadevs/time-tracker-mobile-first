@@ -13,33 +13,33 @@ interface DangerZoneCardProps {
 
 const DangerZoneCard = ({ onLogout, onDeleteAccount, isDeleting }: DangerZoneCardProps) => {
   return (
-    <Card className="bg-gray-900/50 border-red-900/50">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-red-400 text-lg">
-          <Trash2 className="h-4 w-4" />
+    <Card className="bg-gray-900/50 border-red-900/50 lg:col-span-2">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-red-400">
+          <Trash2 className="h-5 w-5" />
           Zona Peligrosa
         </CardTitle>
-        <CardDescription className="text-sm">
+        <CardDescription>
           Acciones irreversibles que afectarán tu cuenta
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3 pt-0">
+      <CardContent className="space-y-4">
         <Separator className="border-gray-700" />
         
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Button
             onClick={onLogout}
             variant="outline"
-            className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800 text-sm h-9"
+            className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
           >
-            <LogOut className="h-3 w-3 mr-2" />
+            <LogOut className="h-4 w-4 mr-2" />
             Cerrar Sesión
           </Button>
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" className="flex-1 text-sm h-9">
-                <Trash2 className="h-3 w-3 mr-2" />
+              <Button variant="destructive" className="flex-1">
+                <Trash2 className="h-4 w-4 mr-2" />
                 Eliminar Cuenta
               </Button>
             </AlertDialogTrigger>
