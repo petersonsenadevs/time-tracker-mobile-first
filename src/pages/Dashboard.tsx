@@ -6,15 +6,14 @@ import BottomNavBar from '@/components/BottomNavBar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import WelcomeSection from '@/components/dashboard/WelcomeSection';
 import StatsCards from '@/components/dashboard/StatsCards';
-import CalendarSection from '@/components/dashboard/CalendarSection';
-import SalaryInfoCard from '@/components/dashboard/SalaryInfoCard';
-import StatisticsCard from '@/components/dashboard/StatisticsCard';
 import DashboardCarousel from '@/components/dashboard/DashboardCarousel';
+import WorkDayForm from '@/components/WorkDayForm';
 import { useState } from 'react';
 
 const Dashboard = () => {
   const { user, token, logout, dashboardStats } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [isWorkDayFormOpen, setIsWorkDayFormOpen] = useState(false);
 
   const { data: userInfo } = useQuery({
     queryKey: ['user', token],
@@ -32,7 +31,21 @@ const Dashboard = () => {
   const employee = employeeInfo?.employee;
 
   const handleNewWorkDay = () => {
-    console.log('Nueva jornada de trabajo');
+    setIsWorkDayFormOpen(true);
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date);
+    }
+  };
+
+  const handleWorkDaySubmit = (data: any) => {
+    console.log('Work day data:', data);
+  };
+
+  const handleCloseWorkDayForm = () => {
+    setIsWorkDayFormOpen(false);
   };
 
   return (
@@ -54,10 +67,17 @@ const Dashboard = () => {
           employee={employee}
           isLoadingEmployee={isLoadingEmployee}
           selectedDate={selectedDate}
-          onDateSelect={setSelectedDate}
+          onDateSelect={handleDateSelect}
           onNewWorkDay={handleNewWorkDay}
         />
       </div>
+
+      <WorkDayForm
+        selectedDate={selectedDate}
+        isOpen={isWorkDayFormOpen}
+        onClose={handleCloseWorkDayForm}
+        onSubmit={handleWorkDaySubmit}
+      />
 
       <BottomNavBar />
     </div>

@@ -12,8 +12,21 @@ interface CalendarSectionProps {
 }
 
 const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarSectionProps) => {
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      // Solo permitir fechas hasta hoy
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      
+      if (date <= today) {
+        onDateSelect(date);
+        onNewWorkDay(); // Abrir el formulario cuando se selecciona una fecha válida
+      }
+    }
+  };
+
   return (
-    <Card className="bg-gray-900/50 border-gray-700 flex-1 w-full">
+    <Card className="bg-gray-900/50 border-gray-700">
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col space-y-4">
           <div className="flex justify-end">
@@ -32,8 +45,13 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={onDateSelect}
+              onSelect={handleDateSelect}
               locale={es}
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                return date > today;
+              }}
               className="rounded-md border-gray-700 w-full max-w-sm"
               classNames={{
                 months: "flex w-full justify-center",
@@ -85,7 +103,6 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
                 ),
               }}
               aria-label="Calendario para seleccionar fecha de jornada laboral"
-              role="application"
             />
           </div>
           
