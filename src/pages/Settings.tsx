@@ -6,11 +6,7 @@ import { toast } from 'sonner';
 import { Settings as SettingsIcon } from 'lucide-react';
 import BottomNavBar from '@/components/BottomNavBar';
 import AppHeader from '@/components/AppHeader';
-import SettingsCategories from '@/components/settings/SettingsCategories';
-import PersonalInfoCard from '@/components/settings/PersonalInfoCard';
-import UpdateEmailCard from '@/components/settings/UpdateEmailCard';
-import ChangePasswordCard from '@/components/settings/ChangePasswordCard';
-import DangerZoneCard from '@/components/settings/DangerZoneCard';
+import SettingsCarousel from '@/components/settings/SettingsCarousel';
 import SettingsLoadingState from '@/components/settings/SettingsLoadingState';
 import SettingsErrorState from '@/components/settings/SettingsErrorState';
 
@@ -78,7 +74,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20 lg:pb-8">
+    <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
       <AppHeader 
         pageTitle="Configuración"
         pageIcon={SettingsIcon}
@@ -87,28 +83,24 @@ const Settings = () => {
         showActions={true}
       />
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="mb-8">
-          <p className="text-gray-400">Gestiona tu cuenta y preferencias</p>
-        </div>
+      <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">
+        <div className="h-full flex flex-col lg:block">
+          <div className="mb-6 flex-shrink-0">
+            <p className="text-gray-400">Gestiona tu cuenta y preferencias</p>
+          </div>
 
-        <SettingsCategories />
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <PersonalInfoCard user={currentUser} />
-          <UpdateEmailCard 
-            onUpdateEmail={handleEmailUpdate}
-            isLoading={updateEmailMutation.isPending}
-          />
-          <ChangePasswordCard 
-            onChangePassword={handlePasswordChange}
-            isLoading={changePasswordMutation.isPending}
-          />
-          <DangerZoneCard 
-            onLogout={logout}
-            onDeleteAccount={handleDeleteAccount}
-            isDeleting={deleteUserMutation.isPending}
-          />
+          <div className="flex-1 lg:flex-none">
+            <SettingsCarousel
+              user={currentUser}
+              onUpdateEmail={handleEmailUpdate}
+              onChangePassword={handlePasswordChange}
+              onLogout={logout}
+              onDeleteAccount={handleDeleteAccount}
+              isEmailLoading={updateEmailMutation.isPending}
+              isPasswordLoading={changePasswordMutation.isPending}
+              isDeleting={deleteUserMutation.isPending}
+            />
+          </div>
         </div>
       </div>
 
