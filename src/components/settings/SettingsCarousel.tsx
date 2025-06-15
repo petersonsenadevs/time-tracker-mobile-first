@@ -1,5 +1,6 @@
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import PersonalInfoCard from './PersonalInfoCard';
 import UpdateEmailCard from './UpdateEmailCard';
 import ChangePasswordCard from './ChangePasswordCard';
@@ -41,16 +42,18 @@ const SettingsCarousel = ({
       id: 'account',
       title: 'Gestión de Cuenta',
       content: (
-        <div className="space-y-4 h-full overflow-y-auto pr-2">
-          <UpdateEmailCard 
-            onUpdateEmail={onUpdateEmail}
-            isLoading={isEmailLoading}
-          />
-          <ChangePasswordCard 
-            onChangePassword={onChangePassword}
-            isLoading={isPasswordLoading}
-          />
-        </div>
+        <ScrollArea className="h-full pr-2">
+          <div className="space-y-6 pb-4">
+            <UpdateEmailCard 
+              onUpdateEmail={onUpdateEmail}
+              isLoading={isEmailLoading}
+            />
+            <ChangePasswordCard 
+              onChangePassword={onChangePassword}
+              isLoading={isPasswordLoading}
+            />
+          </div>
+        </ScrollArea>
       )
     },
     {
@@ -64,9 +67,9 @@ const SettingsCarousel = ({
       id: 'customization',
       title: 'Personalización',
       content: (
-        <div className="h-full overflow-y-auto">
+        <ScrollArea className="h-full">
           <CustomizationCard />
-        </div>
+        </ScrollArea>
       )
     },
     {
@@ -107,7 +110,7 @@ const SettingsCarousel = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 min-h-0 max-h-[calc(100vh-200px)] lg:max-h-[calc(100vh-160px)]">
+                <div className="flex-1 min-h-0">
                   {slide.content}
                 </div>
               </div>
