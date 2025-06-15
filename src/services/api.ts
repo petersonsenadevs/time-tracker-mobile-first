@@ -1,4 +1,3 @@
-
 const API_BASE_URL = 'https://jornalia-api.fly.dev';
 
 interface ApiError {
@@ -11,6 +10,11 @@ class ApiClient {
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
+  }
+
+  // Getter público para acceder a la baseURL
+  get baseURL() {
+    return this.baseURL;
   }
 
   private async request<T>(

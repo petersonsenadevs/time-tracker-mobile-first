@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +10,7 @@ import MonthYearSelector from '@/components/statistics/MonthYearSelector';
 import ReportSummary from '@/components/statistics/ReportSummary';
 import DailyBreakdown from '@/components/statistics/DailyBreakdown';
 import SalaryInfo from '@/components/statistics/SalaryInfo';
+import ExportButtons from '@/components/statistics/ExportButtons';
 
 const Statistics = () => {
   const { token } = useAuth();
@@ -68,6 +68,11 @@ const Statistics = () => {
               <>
                 <ReportSummary reportData={reportData} />
                 <SalaryInfo salary={reportData.salary} hasData={reportData.hasData} />
+                <ExportButtons 
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  hasData={reportData.hasData}
+                />
                 <DailyBreakdown hourWorkedData={reportData.hourWorkedData} hasData={reportData.hasData} />
               </>
             )}
