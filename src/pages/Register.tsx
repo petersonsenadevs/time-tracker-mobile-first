@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -151,18 +150,6 @@ const Register = () => {
                   onPrevious={handlePrevious}
                   onNext={handleNext}
                 />
-
-                <div className="mt-4 sm:mt-6 text-center">
-                  <p className="text-gray-400 text-sm">
-                    ¿Ya tienes cuenta?{' '}
-                    <Link 
-                      to="/login" 
-                      className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
-                    >
-                      Iniciar Sesión
-                    </Link>
-                  </p>
-                </div>
               </div>
             </form>
           </Form>
