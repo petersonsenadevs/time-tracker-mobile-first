@@ -1,8 +1,8 @@
 
 import Header from '@/components/Header';
 import GlitchSlider from '@/components/GlitchSlider';
-import FeaturesSection from '@/components/FeaturesSection';
-import CTASection from '@/components/CTASection';
+import AppGallerySection from '@/components/AppGallerySection';
+import PricingSection from '@/components/PricingSection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -10,8 +10,8 @@ const Index = () => {
     <div className="min-h-screen bg-black">
       <Header />
       <GlitchSlider />
-      <FeaturesSection />
-      <CTASection />
+      <AppGallerySection />
+      <PricingSection />
       <Footer />
     </div>
   );
