@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const GlitchSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -31,14 +30,6 @@ const GlitchSlider = () => {
     setIsGlitching(true);
     setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-      setIsGlitching(false);
-    }, 200);
-  };
-
-  const prevSlide = () => {
-    setIsGlitching(true);
-    setTimeout(() => {
-      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
       setIsGlitching(false);
     }, 200);
   };
@@ -102,20 +93,6 @@ const GlitchSlider = () => {
           </div>
         </div>
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-teal-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-teal-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
 
       {/* Slide Indicators */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">

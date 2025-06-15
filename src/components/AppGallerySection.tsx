@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 const AppGallerySection = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -27,14 +27,6 @@ const AppGallerySection = () => {
       description: "Administra proyectos y supervisa el progreso del equipo"
     }
   ];
-
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % galleryImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImage((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
 
   return (
     <section id="gallery" className="py-20 bg-gradient-to-b from-black to-gray-900">
@@ -64,20 +56,6 @@ const AppGallerySection = () => {
                 <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
               </button>
             </div>
-
-            {/* Navigation Arrows */}
-            <button
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-sm rounded-full p-3 hover:bg-black/70 transition-all duration-300"
-            >
-              <ChevronLeft className="w-6 h-6 text-white" />
-            </button>
-            <button
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 backdrop-blur-sm rounded-full p-3 hover:bg-black/70 transition-all duration-300"
-            >
-              <ChevronRight className="w-6 h-6 text-white" />
-            </button>
 
             {/* Image Info */}
             <div className="absolute bottom-0 left-0 right-0 p-8">
