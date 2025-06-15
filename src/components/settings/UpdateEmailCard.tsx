@@ -26,33 +26,33 @@ const UpdateEmailCard = ({ onUpdateEmail, isLoading }: UpdateEmailCardProps) => 
   };
 
   return (
-    <Card className="bg-gray-900/50 border-gray-700">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-white text-lg">
-          <Mail className="h-4 w-4 text-teal-400" />
+    <Card className="bg-gray-900/50 border-gray-700 flex-shrink-0">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-white text-sm">
+          <Mail className="h-3 w-3 text-teal-400" />
           Actualizar Email
         </CardTitle>
-        <CardDescription className="text-sm">
+        <CardDescription className="text-xs">
           Cambia tu dirección de correo electrónico
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-2">
           <div>
-            <Label htmlFor="email" className="text-gray-300 text-sm">Nuevo Email</Label>
+            <Label htmlFor="email" className="text-gray-300 text-xs">Nuevo Email</Label>
             <Input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nuevo@email.com"
-              className="bg-gray-800 border-gray-600 text-white text-sm h-9"
+              className="bg-gray-800 border-gray-600 text-white text-xs h-7"
               required
             />
           </div>
           <Button
             type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-600 text-black text-sm h-9"
+            className="w-full bg-teal-500 hover:bg-teal-600 text-black text-xs h-7"
             disabled={isLoading}
           >
             {isLoading ? 'Actualizando...' : 'Actualizar Email'}

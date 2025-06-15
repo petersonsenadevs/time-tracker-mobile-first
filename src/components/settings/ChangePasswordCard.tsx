@@ -47,50 +47,50 @@ const ChangePasswordCard = ({ onChangePassword, isLoading }: ChangePasswordCardP
   };
 
   return (
-    <Card className="bg-gray-900/50 border-gray-700">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-white text-lg">
-          <Lock className="h-4 w-4 text-teal-400" />
+    <Card className="bg-gray-900/50 border-gray-700 flex-1 overflow-hidden">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-white text-sm">
+          <Lock className="h-3 w-3 text-teal-400" />
           Cambiar Contraseña
         </CardTitle>
-        <CardDescription className="text-sm">
+        <CardDescription className="text-xs">
           Actualiza tu contraseña para mantener tu cuenta segura
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="grid gap-3 sm:grid-cols-1">
+      <CardContent className="pt-0 h-full flex flex-col">
+        <form onSubmit={handleSubmit} className="space-y-1.5 flex-1">
+          <div className="space-y-1.5">
             <div>
-              <Label htmlFor="old_password" className="text-gray-300 text-sm">Contraseña Actual</Label>
+              <Label htmlFor="old_password" className="text-gray-300 text-xs">Contraseña Actual</Label>
               <Input
                 id="old_password"
                 type="password"
                 value={passwordForm.old_password}
                 onChange={(e) => setPasswordForm({ ...passwordForm, old_password: e.target.value })}
-                className="bg-gray-800 border-gray-600 text-white text-sm h-9"
+                className="bg-gray-800 border-gray-600 text-white text-xs h-7"
                 required
               />
             </div>
             <div>
-              <Label htmlFor="new_password" className="text-gray-300 text-sm">Nueva Contraseña</Label>
+              <Label htmlFor="new_password" className="text-gray-300 text-xs">Nueva Contraseña</Label>
               <Input
                 id="new_password"
                 type="password"
                 value={passwordForm.new_password}
                 onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
-                className="bg-gray-800 border-gray-600 text-white text-sm h-9"
+                className="bg-gray-800 border-gray-600 text-white text-xs h-7"
                 minLength={8}
                 required
               />
             </div>
             <div>
-              <Label htmlFor="password_confirmation" className="text-gray-300 text-sm">Confirmar Contraseña</Label>
+              <Label htmlFor="password_confirmation" className="text-gray-300 text-xs">Confirmar Contraseña</Label>
               <Input
                 id="password_confirmation"
                 type="password"
                 value={passwordForm.password_confirmation}
                 onChange={(e) => setPasswordForm({ ...passwordForm, password_confirmation: e.target.value })}
-                className="bg-gray-800 border-gray-600 text-white text-sm h-9"
+                className="bg-gray-800 border-gray-600 text-white text-xs h-7"
                 minLength={8}
                 required
               />
@@ -98,7 +98,7 @@ const ChangePasswordCard = ({ onChangePassword, isLoading }: ChangePasswordCardP
           </div>
           <Button
             type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-600 text-black text-sm h-9"
+            className="w-full bg-teal-500 hover:bg-teal-600 text-black text-xs h-7 mt-2"
             disabled={isLoading}
           >
             {isLoading ? 'Cambiando...' : 'Cambiar Contraseña'}

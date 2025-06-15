@@ -83,12 +83,8 @@ const Settings = () => {
         showActions={true}
       />
 
-      <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">
+      <div className="flex-1 container mx-auto px-4 py-4 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">
         <div className="h-full flex flex-col lg:block">
-          <div className="mb-6 flex-shrink-0">
-            <p className="text-gray-400">Gestiona tu cuenta y preferencias</p>
-          </div>
-
           <div className="flex-1 lg:flex-none">
             <SettingsCarousel
               user={currentUser}
