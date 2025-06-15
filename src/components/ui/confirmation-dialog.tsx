@@ -39,28 +39,29 @@ const ConfirmationDialog = ({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="bg-gray-900 border-gray-700 text-white max-w-md mx-4">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-white text-lg font-semibold">
+      <AlertDialogContent className="bg-gray-900 border-gray-700 text-white w-[calc(100vw-2rem)] max-w-md mx-auto sm:w-full">
+        <AlertDialogHeader className="space-y-3">
+          <AlertDialogTitle className="text-white text-lg font-semibold text-center sm:text-left">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-gray-300 text-sm">
+          <AlertDialogDescription className="text-gray-300 text-sm text-center sm:text-left">
             {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="gap-2">
+        <AlertDialogFooter className="flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 sm:justify-end">
           <AlertDialogCancel 
             onClick={onClose}
-            className="bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white"
+            className="w-full sm:w-auto bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700 hover:text-white order-2 sm:order-1"
           >
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction 
             onClick={handleConfirm}
-            className={variant === 'destructive' 
-              ? "bg-red-600 hover:bg-red-700 text-white" 
-              : "bg-teal-600 hover:bg-teal-700 text-white"
-            }
+            className={`w-full sm:w-auto order-1 sm:order-2 ${
+              variant === 'destructive' 
+                ? "bg-red-600 hover:bg-red-700 text-white" 
+                : "bg-teal-600 hover:bg-teal-700 text-white"
+            }`}
           >
             {confirmText}
           </AlertDialogAction>
