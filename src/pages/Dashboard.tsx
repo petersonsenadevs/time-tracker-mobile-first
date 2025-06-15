@@ -1,6 +1,6 @@
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
 import BottomNavBar from '@/components/BottomNavBar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
@@ -11,9 +11,10 @@ import WorkDayForm from '@/components/WorkDayForm';
 import { useState } from 'react';
 
 const Dashboard = () => {
-  const { user, token, logout, dashboardStats } = useAuth();
+  const { user, token, logout, dashboardStats, refreshStats } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [isWorkDayFormOpen, setIsWorkDayFormOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: userInfo } = useQuery({
     queryKey: ['user', token],
@@ -48,11 +49,22 @@ const Dashboard = () => {
     setIsWorkDayFormOpen(false);
   };
 
+  const handleRefresh = () => {
+    // Invalidar queries para refrescar datos
+    queryClient.invalidateQueries({ queryKey: ['user', token] });
+    queryClient.invalidateQueries({ queryKey: ['employee', token] });
+    // Refrescar stats del contexto
+    if (refreshStats) {
+      refreshStats();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
       <DashboardHeader 
         user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
-        onLogout={logout} 
+        onLogout={logout}
+        onRefresh={handleRefresh}
       />
       
       <div className="flex-1 container mx-auto px-4 py-6 max-w-7xl pb-20 lg:pb-6 overflow-hidden lg:overflow-auto">
