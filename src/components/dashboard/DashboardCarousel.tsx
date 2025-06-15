@@ -3,7 +3,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import CalendarSection from './CalendarSection';
 import SalaryInfoCard from './SalaryInfoCard';
 import StatisticsCard from './StatisticsCard';
+import WorkSessionCard from './WorkSessionCard';
 import { Employee } from '@/services/userService';
+import { WorkSession } from '@/services/workSessionService';
 
 interface DashboardStats {
   totalHoursWorked?: number;
@@ -19,6 +21,8 @@ interface DashboardCarouselProps {
   selectedDate: Date;
   onDateSelect: (date: Date | undefined) => void;
   onNewWorkDay: () => void;
+  workSession: WorkSession | null;
+  isLoadingWorkSession: boolean;
 }
 
 const DashboardCarousel = ({ 
@@ -27,7 +31,9 @@ const DashboardCarousel = ({
   isLoadingEmployee, 
   selectedDate, 
   onDateSelect, 
-  onNewWorkDay 
+  onNewWorkDay,
+  workSession,
+  isLoadingWorkSession
 }: DashboardCarouselProps) => {
   const slides = [
     {
@@ -38,6 +44,17 @@ const DashboardCarousel = ({
           selectedDate={selectedDate}
           onDateSelect={onDateSelect}
           onNewWorkDay={onNewWorkDay}
+        />
+      )
+    },
+    {
+      id: 'work-session',
+      title: 'Jornada Laboral',
+      content: (
+        <WorkSessionCard 
+          workSession={workSession}
+          selectedDate={selectedDate}
+          isLoading={isLoadingWorkSession}
         />
       )
     },
