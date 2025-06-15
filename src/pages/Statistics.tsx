@@ -18,38 +18,17 @@ const Statistics = () => {
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
 
-  const { data: reportData, isLoading, error } = useQuery({
+  const { data: reportData, isLoading } = useQuery({
     queryKey: ['monthly-report', selectedMonth, selectedYear, token],
     queryFn: () => reportService.getMonthlyReport(selectedMonth, selectedYear, token!),
     enabled: !!token,
+    retry: false, // No reintentar en caso de error
   });
 
   const handleMonthYearChange = (month: number, year: number) => {
     setSelectedMonth(month);
     setSelectedYear(year);
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Cargando estadísticas...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 mb-4">Error al cargar las estadísticas</p>
-          <p className="text-gray-400">{error instanceof Error ? error.message : 'Error desconocido'}</p>
-        </div>
-      </div>
-    );
-  }
 
   const monthNames = [
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -68,21 +47,30 @@ const Statistics = () => {
           isLoading={isLoading}
         />
 
-        {reportData && !reportData.hasData && (
-          <Alert className="bg-gray-900/50 border-yellow-600 border">
-            <AlertTriangle className="h-4 w-4 text-yellow-400" />
-            <AlertDescription className="text-yellow-200">
-              No hay datos disponibles para {monthNames[selectedMonth - 1]} de {selectedYear}. 
-              Los valores se muestran en cero.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {reportData && (
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-400 mx-auto mb-4"></div>
+            <p className="text-gray-300">Cargando estadísticas...</p>
+          </div>
+        ) : (
           <>
-            <ReportSummary reportData={reportData} />
-            <SalaryInfo salary={reportData.salary} hasData={reportData.hasData} />
-            <DailyBreakdown hourWorkedData={reportData.hourWorkedData} hasData={reportData.hasData} />
+            {reportData && !reportData.hasData && (
+              <Alert className="bg-gray-900/50 border-yellow-600 border">
+                <AlertTriangle className="h-4 w-4 text-yellow-400" />
+                <AlertDescription className="text-yellow-200">
+                  No hay datos disponibles para {monthNames[selectedMonth - 1]} de {selectedYear}. 
+                  Los valores se muestran en cero.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {reportData && (
+              <>
+                <ReportSummary reportData={reportData} />
+                <SalaryInfo salary={reportData.salary} hasData={reportData.hasData} />
+                <DailyBreakdown hourWorkedData={reportData.hourWorkedData} hasData={reportData.hasData} />
+              </>
+            )}
           </>
         )}
       </div>

@@ -79,15 +79,10 @@ export const reportService = {
       const data = await apiClient.getWithAuth<MonthlyReportData>(`/api/monthly_report?month=${month}&year=${year}`, token);
       return { ...data, hasData: true };
     } catch (error: any) {
-      console.error('Monthly report fetch error:', error);
+      console.log('Monthly report fetch error - returning empty report:', error.message);
       
-      // Si es un 404, devolver datos vacíos en lugar de fallar
-      if (error.message?.includes('404') || error.message?.includes('Not Found')) {
-        console.log('No data found for this period, returning empty report');
-        return createEmptyReport(month, year);
-      }
-      
-      throw error;
+      // Siempre devolver datos vacíos en lugar de lanzar error
+      return createEmptyReport(month, year);
     }
   }
 };
