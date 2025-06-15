@@ -73,9 +73,9 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
   const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
 
   return (
-    <Card className="bg-gray-900/50 border-gray-700">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col space-y-4">
+    <Card className="bg-gray-900/50 border-gray-700 h-full">
+      <CardContent className="p-4 sm:p-6 h-full flex flex-col">
+        <div className="flex flex-col space-y-4 h-full">
           <div className="flex justify-between items-center">
             <Button
               size="sm"
@@ -200,7 +200,7 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
             </Button>
           </div>
           
-          <div className="flex justify-center w-full">
+          <div className="flex-1 flex justify-center items-start">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -213,7 +213,7 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
                 today.setHours(23, 59, 59, 999);
                 return date > today;
               }}
-              className="rounded-md border-gray-700 w-full max-w-sm"
+              className="rounded-md border-gray-700 w-full max-w-lg"
               classNames={{
                 months: "flex w-full justify-center",
                 month: "space-y-4 w-full",
@@ -221,10 +221,10 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
                 nav: "hidden", // Ocultamos la navegación por defecto
                 table: "w-full border-collapse space-y-1",
                 head_row: "flex w-full",
-                head_cell: "text-gray-400 rounded-md w-full font-medium text-sm py-3 text-center",
-                row: "flex w-full mt-1",
-                cell: "relative w-full h-12 sm:h-14 text-center text-sm p-1 focus-within:relative focus-within:z-20",
-                day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg flex items-center justify-center cursor-pointer text-base sm:text-lg active:scale-95",
+                head_cell: "text-gray-400 rounded-md w-full font-medium text-sm py-4 text-center",
+                row: "flex w-full mt-2",
+                cell: "relative w-full h-16 sm:h-16 text-center text-sm p-1 focus-within:relative focus-within:z-20",
+                day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-lg flex items-center justify-center cursor-pointer text-lg sm:text-xl active:scale-95",
                 day_range_end: "day-range-end",
                 day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-bold shadow-lg scale-105",
                 day_today: "bg-gray-700 text-white font-bold border-2 border-gray-500 shadow-md",
@@ -236,10 +236,6 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
               aria-label="Calendario para seleccionar fecha de jornada laboral"
             />
           </div>
-          
-          <p className="text-center text-sm text-gray-400 mt-4 px-2">
-            Selecciona una fecha para gestionar tu jornada laboral
-          </p>
         </div>
       </CardContent>
     </Card>
