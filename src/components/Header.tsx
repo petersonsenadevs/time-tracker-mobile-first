@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Menu, X, Clock, LogIn, UserPlus } from 'lucide-react';
+import { Menu, X, LogIn, UserPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
@@ -13,8 +13,15 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Clock className="h-8 w-8 text-teal-400" />
-            <span className="text-xl font-bold text-white">TimeTracker</span>
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/0b1264ea-90e2-493e-a376-3c9642216396.png" 
+                alt="TimeTracker Logo" 
+                className="h-8 w-8 sm:h-10 sm:w-10 object-contain rounded-md"
+              />
+            </div>
+            <span className="text-xl font-bold text-white hidden xs:block">TimeTracker</span>
+            <span className="text-lg font-bold text-white block xs:hidden">TT</span>
           </Link>
 
           {/* Desktop Navigation */}

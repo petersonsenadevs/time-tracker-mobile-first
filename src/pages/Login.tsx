@@ -8,7 +8,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Clock } from 'lucide-react';
 import { LoginData } from '@/services/authService';
 
 const loginSchema = z.object({
@@ -61,7 +60,13 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center">
           <Link to="/" className="flex items-center justify-center space-x-2 mb-6 hover:opacity-80 transition-opacity">
-            <Clock className="h-10 w-10 text-teal-400" />
+            <div className="relative">
+              <img 
+                src="/lovable-uploads/0b1264ea-90e2-493e-a376-3c9642216396.png" 
+                alt="TimeTracker Logo" 
+                className="h-10 w-10 object-contain rounded-md"
+              />
+            </div>
             <span className="text-2xl font-bold text-white">TimeTracker</span>
           </Link>
           <h2 className="text-3xl font-bold text-white">Iniciar Sesión</h2>
