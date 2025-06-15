@@ -12,16 +12,14 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center">
             <div className="relative">
               <img 
-                src="/lovable-uploads/0b1264ea-90e2-493e-a376-3c9642216396.png" 
-                alt="TimeTracker Logo" 
-                className="h-8 w-8 sm:h-10 sm:w-10 object-contain rounded-md"
+                src="https://iwxedutdoaukcadsvqux.supabase.co/storage/v1/object/public/klk//Logo%20JORNALIA_BLANCO.png" 
+                alt="Jornalia Logo" 
+                className="h-8 w-auto sm:h-10 sm:w-auto object-contain"
               />
             </div>
-            <span className="text-xl font-bold text-white hidden xs:block">TimeTracker</span>
-            <span className="text-lg font-bold text-white block xs:hidden">TT</span>
           </Link>
 
           {/* Desktop Navigation */}

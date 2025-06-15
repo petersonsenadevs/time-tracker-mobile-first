@@ -30,16 +30,14 @@ const AppHeader = ({
         <div className="flex items-center justify-between h-full">
           {/* Left side - Logo + Page Title */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center">
               <div className="relative">
                 <img 
-                  src="/lovable-uploads/35165c70-c5ee-4ed3-9965-65f15ed299fe.png" 
-                  alt="TimeTracker Logo" 
-                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain rounded-md"
+                  src="https://iwxedutdoaukcadsvqux.supabase.co/storage/v1/object/public/klk//Logo%20JORNALIA_BLANCO.png" 
+                  alt="Jornalia Logo" 
+                  className="h-8 w-auto sm:h-10 sm:w-auto object-contain"
                 />
               </div>
-              <span className="text-lg sm:text-xl font-bold text-white hidden xs:block">TimeTracker</span>
-              <span className="text-base font-bold text-white block xs:hidden">TT</span>
             </div>
             <div className="hidden sm:flex items-center space-x-2 border-l border-gray-700 pl-4">
               <PageIcon className="h-5 w-5 text-teal-400" />
