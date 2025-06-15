@@ -56,39 +56,41 @@ const DailyBreakdown = ({ hourWorkedData, hasData = true }: DailyBreakdownProps)
             <p className="text-gray-400">No hay registros de trabajo para este período</p>
           </div>
         ) : (
-          <ScrollArea className="h-[500px] w-full">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-gray-700">
-                  <TableHead className="text-gray-300 w-[120px] min-w-[120px]">Fecha</TableHead>
-                  <TableHead className="text-gray-300 w-[80px] min-w-[80px] text-center">Normal</TableHead>
-                  <TableHead className="text-gray-300 w-[80px] min-w-[80px] text-center">Extra</TableHead>
-                  <TableHead className="text-gray-300 w-[80px] min-w-[80px] text-center">Festivo</TableHead>
-                  <TableHead className="text-gray-300 w-[80px] min-w-[80px] text-center">Nocturno</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedEntries.map(([key, dayData]) => (
-                  <TableRow key={key} className="border-gray-700">
-                    <TableCell className={`${textColorClass} font-medium w-[120px] min-w-[120px]`}>
-                      {formatDate(dayData.date)}
-                    </TableCell>
-                    <TableCell className={`${cellColorClasses.normal} w-[80px] min-w-[80px] text-center text-sm`}>
-                      {formatHours(dayData.normal_hours.hours, dayData.normal_hours.minutes)}
-                    </TableCell>
-                    <TableCell className={`${cellColorClasses.overtime} w-[80px] min-w-[80px] text-center text-sm`}>
-                      {formatHours(dayData.overtime_hours.hours, dayData.overtime_hours.minutes)}
-                    </TableCell>
-                    <TableCell className={`${cellColorClasses.holiday} w-[80px] min-w-[80px] text-center text-sm`}>
-                      {formatHours(dayData.holiday_hours.hours, dayData.holiday_hours.minutes)}
-                    </TableCell>
-                    <TableCell className={`${cellColorClasses.night} w-[80px] min-w-[80px] text-center text-sm`}>
-                      {formatHours(dayData.night_hours.hours, dayData.night_hours.minutes)}
-                    </TableCell>
+          <ScrollArea className="h-[500px]">
+            <div className="px-6 pb-6">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-gray-700">
+                    <TableHead className="text-gray-300 text-left px-2">Fecha</TableHead>
+                    <TableHead className="text-gray-300 text-center px-1 text-xs sm:text-sm">Normal</TableHead>
+                    <TableHead className="text-gray-300 text-center px-1 text-xs sm:text-sm">Extra</TableHead>
+                    <TableHead className="text-gray-300 text-center px-1 text-xs sm:text-sm">Festivo</TableHead>
+                    <TableHead className="text-gray-300 text-center px-1 text-xs sm:text-sm">Nocturno</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {sortedEntries.map(([key, dayData]) => (
+                    <TableRow key={key} className="border-gray-700">
+                      <TableCell className={`${textColorClass} font-medium text-left px-2 text-xs sm:text-sm`}>
+                        {formatDate(dayData.date)}
+                      </TableCell>
+                      <TableCell className={`${cellColorClasses.normal} text-center px-1 text-xs`}>
+                        {formatHours(dayData.normal_hours.hours, dayData.normal_hours.minutes)}
+                      </TableCell>
+                      <TableCell className={`${cellColorClasses.overtime} text-center px-1 text-xs`}>
+                        {formatHours(dayData.overtime_hours.hours, dayData.overtime_hours.minutes)}
+                      </TableCell>
+                      <TableCell className={`${cellColorClasses.holiday} text-center px-1 text-xs`}>
+                        {formatHours(dayData.holiday_hours.hours, dayData.holiday_hours.minutes)}
+                      </TableCell>
+                      <TableCell className={`${cellColorClasses.night} text-center px-1 text-xs`}>
+                        {formatHours(dayData.night_hours.hours, dayData.night_hours.minutes)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </ScrollArea>
         )}
       </CardContent>
