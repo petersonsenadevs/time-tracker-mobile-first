@@ -104,10 +104,10 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
     // Convertir la fecha de YYYY-MM-DD a YYYY/MM/DD
     const formattedDate = data.date.replace(/-/g, '/');
 
-    // Mapear el tipo de trabajo al formato correcto
+    // Mapear el tipo de trabajo al formato correcto según la API
     const workTypeMap: Record<string, string> = {
-      'NORMAL': 'normal',
-      'OVERTIME': 'overtime', 
+      'NORMAL': 'is_normal',
+      'OVERTIME': 'is_overtime', 
       'HOLIDAY': 'is_holiday'
     };
 
@@ -117,7 +117,7 @@ const WorkDayForm = ({ selectedDate, isOpen, onClose, onSubmit }: WorkDayFormPro
       start_time: data.startTime, // Formato H:i (ej: "09:00")
       end_time: data.endTime, // Formato H:i (ej: "17:00")
       planned_hours: plannedHoursNum, // Entero, mínimo 2
-      work_type: data.workType ? workTypeMap[data.workType] || data.workType : undefined, // String con formato correcto
+      work_type: data.workType ? workTypeMap[data.workType] : 'is_normal', // Por defecto is_normal
     };
 
     console.log('Formatted data for API:', hourSessionData);
