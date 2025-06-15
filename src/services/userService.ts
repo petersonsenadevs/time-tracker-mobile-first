@@ -1,3 +1,4 @@
+
 import { apiClient } from './api';
 
 export interface UpdateEmailData {
@@ -22,6 +23,7 @@ export interface Employee {
   company_name: string;
   normal_hourly_rate: string;
   overtime_hourly_rate: string;
+  night_hourly_rate: string;
   holiday_hourly_rate: string;
   irpf: number;
 }
@@ -31,6 +33,7 @@ export interface UpdateEmployeeData {
   company_name?: string;
   normal_hourly_rate?: string;
   overtime_hourly_rate?: string;
+  night_hourly_rate?: string;
   holiday_hourly_rate?: string;
   irpf?: number;
 }
