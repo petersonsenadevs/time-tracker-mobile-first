@@ -1,4 +1,3 @@
-
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -73,48 +72,46 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
 
   return (
     <Card className="bg-gray-900/50 border-gray-700 h-full">
-      <CardContent className="p-4 h-full flex flex-col">
-        {/* Action buttons */}
-        <div className="flex justify-between items-center mb-4 flex-shrink-0">
+      <CardContent className="p-3 h-full flex flex-col">
+        <div className="flex justify-between items-center mb-3 flex-shrink-0">
           <Button
             size="sm"
             variant="outline"
-            className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+            className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors text-xs px-2 py-1"
             onClick={goToToday}
             disabled={isToday(selectedDate)}
           >
-            <CalendarDays className="h-4 w-4 mr-2" />
+            <CalendarDays className="h-3 w-3 mr-1" />
             Hoy
           </Button>
           
           <Button
             size="sm"
-            className="bg-teal-500 hover:bg-teal-600 text-black font-medium transition-colors"
+            className="bg-teal-500 hover:bg-teal-600 text-black font-medium transition-colors text-xs px-2 py-1"
             onClick={onNewWorkDay}
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-3 w-3 mr-1" />
             Nueva Jornada
           </Button>
         </div>
 
-        {/* Month/Year navigation */}
-        <div className="flex items-center justify-between px-2 py-2 bg-gray-800/50 rounded-lg mb-4 flex-shrink-0">
+        <div className="flex items-center justify-between px-2 py-1 bg-gray-800/50 rounded-lg mb-3 flex-shrink-0">
           <Button
             variant="ghost"
             size="sm"
             onClick={handlePreviousMonth}
-            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2"
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-1 h-6 w-6"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3 w-3" />
           </Button>
           
           <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
-                className="text-white font-semibold capitalize hover:bg-gray-700 px-4 py-2"
+                className="text-white font-semibold capitalize hover:bg-gray-700 px-3 py-1 text-sm h-6"
               >
-                {format(month, "MMMM yyyy", { locale: es })}
+                {format(month, "MMM yyyy", { locale: es })}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 p-4 bg-gray-800 border-gray-600" align="center">
@@ -189,14 +186,13 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
             size="sm"
             onClick={handleNextMonth}
             disabled={!canGoNext()}
-            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 disabled:opacity-30 disabled:cursor-not-allowed"
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-1 h-6 w-6 disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3 w-3" />
           </Button>
         </div>
         
-        {/* Calendar */}
-        <div className="flex-1 flex justify-center items-center min-h-0">
+        <div className="flex-1 flex justify-center items-start min-h-0">
           <Calendar
             mode="single"
             selected={selectedDate}
@@ -209,18 +205,18 @@ const CalendarSection = ({ selectedDate, onDateSelect, onNewWorkDay }: CalendarS
               today.setHours(23, 59, 59, 999);
               return date > today;
             }}
-            className="rounded-md border-gray-700 w-full max-w-sm"
+            className="rounded-md border-gray-700 w-full"
             classNames={{
               months: "flex w-full justify-center",
-              month: "space-y-2 w-full",
+              month: "space-y-1 w-full",
               caption: "hidden",
               nav: "hidden",
-              table: "w-full border-collapse space-y-1",
+              table: "w-full border-collapse",
               head_row: "flex w-full",
-              head_cell: "text-gray-400 rounded-md w-full font-medium text-xs py-2 text-center",
-              row: "flex w-full mt-1",
-              cell: "relative w-full h-10 text-center text-sm p-0.5",
-              day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-md flex items-center justify-center cursor-pointer text-sm active:scale-95",
+              head_cell: "text-gray-400 rounded-md w-full font-medium text-xs py-1 text-center",
+              row: "flex w-full mt-0.5",
+              cell: "relative w-full h-8 text-center text-xs p-0.5",
+              day: "h-full w-full p-0 font-normal text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 rounded-md flex items-center justify-center cursor-pointer text-xs active:scale-95",
               day_selected: "bg-teal-500 text-black hover:bg-teal-600 hover:text-black focus:bg-teal-500 focus:text-black font-bold shadow-lg scale-105",
               day_today: "bg-gray-700 text-white font-bold border border-gray-500",
               day_outside: "text-gray-600 opacity-40",

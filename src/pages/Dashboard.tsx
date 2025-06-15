@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
@@ -25,7 +24,6 @@ const Dashboard = () => {
   console.log('Dashboard - dashboardStats:', dashboardStats);
   console.log('Dashboard - countHourSessionDay específicamente:', dashboardStats?.countHourSessionDay);
 
-  // Verificar si el usuario ya vio el onboarding
   useEffect(() => {
     console.log('Verificando onboarding - Usuario:', user);
     const onboardingCompleted = localStorage.getItem('onboarding-completed');
@@ -125,16 +123,20 @@ const Dashboard = () => {
         showActions={true}
       />
       
-      <div className="flex-1 pt-4 pb-20 lg:pb-6 overflow-auto">
-        <div className="container mx-auto px-4 max-w-7xl">
-          <div className="space-y-6">
-            <WelcomeSection 
-              user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
-            />
+      <div className="flex-1 pt-16 pb-16 lg:pb-4 overflow-hidden">
+        <div className="h-full flex flex-col px-4 max-w-7xl mx-auto">
+          <div className="flex-1 flex flex-col space-y-3 min-h-0">
+            <div className="flex-shrink-0">
+              <WelcomeSection 
+                user={currentUser || { id: user?.id || '', email: user?.email || '', name: user?.name, role: user?.role || 'employee' }} 
+              />
+            </div>
             
-            <StatsCards dashboardStats={dashboardStats} />
+            <div className="flex-shrink-0">
+              <StatsCards dashboardStats={dashboardStats} />
+            </div>
             
-            <div className="min-h-0">
+            <div className="flex-1 min-h-0">
               <DashboardCarousel
                 dashboardStats={dashboardStats}
                 employee={employee}

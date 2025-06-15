@@ -64,23 +64,23 @@ const DashboardCarousel = ({
   ];
 
   return (
-    <div className="h-[500px] lg:h-[600px]">
+    <div className="h-full">
       <Carousel className="w-full h-full">
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between mb-4 flex-shrink-0">
-                  <h2 className="text-xl font-bold text-white">{slide.title}</h2>
+                <div className="flex items-center justify-between mb-3 flex-shrink-0">
+                  <h2 className="text-lg font-bold text-white">{slide.title}</h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">
+                    <span className="text-xs text-gray-400">
                       {index + 1} de {slides.length}
                     </span>
                     <div className="flex gap-1">
                       {slides.map((_, i) => (
                         <div
                           key={i}
-                          className={`w-2 h-2 rounded-full transition-colors ${
+                          className={`w-1.5 h-1.5 rounded-full transition-colors ${
                             i === index ? 'bg-teal-400' : 'bg-gray-600'
                           }`}
                         />
@@ -95,8 +95,8 @@ const DashboardCarousel = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
-        <CarouselNext className="right-4 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        <CarouselPrevious className="left-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
+        <CarouselNext className="right-2 bg-gray-800 border-gray-700 text-white hover:bg-gray-700" />
       </Carousel>
     </div>
   );
