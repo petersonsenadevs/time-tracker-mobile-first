@@ -45,6 +45,13 @@ const WorkDays = () => {
     const year = dateString.slice(0, 4);
     const month = dateString.slice(4, 6);
     const day = dateString.slice(6, 8);
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatDateWithDayName = (dateString: string) => {
+    const year = dateString.slice(0, 4);
+    const month = dateString.slice(4, 6);
+    const day = dateString.slice(6, 8);
     const date = new Date(`${year}-${month}-${day}`);
     return format(date, 'EEEE, d MMMM yyyy', { locale: es });
   };
@@ -138,8 +145,11 @@ const WorkDays = () => {
               {/* Date Header */}
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-teal-400">
-                  {formatDateForDisplay(currentSearchDate)}
+                  {formatDateWithDayName(currentSearchDate)}
                 </h2>
+                <p className="text-gray-400 mt-1">
+                  {formatDateForDisplay(currentSearchDate)}
+                </p>
               </div>
 
               {/* Work Sessions */}
