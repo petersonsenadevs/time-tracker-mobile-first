@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { LoginData } from '@/services/authService';
 import Logo from '@/components/ui/logo';
@@ -18,6 +19,7 @@ const loginSchema = z.object({
   password: z.string()
     .min(8, 'Contraseña debe tener al menos 8 caracteres')
     .max(255, 'Contraseña no puede exceder 255 caracteres'),
+  rememberMe: z.boolean().default(false),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -31,6 +33,7 @@ const Login = () => {
     defaultValues: {
       email: '',
       password: '',
+      rememberMe: false,
     },
   });
 
@@ -106,6 +109,27 @@ const Login = () => {
                       />
                     </FormControl>
                     <FormMessage className="text-red-400" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="rememberMe"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="border-gray-600 data-[state=checked]:bg-teal-500 data-[state=checked]:border-teal-500"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-gray-300 text-sm font-normal cursor-pointer">
+                        Recordarme
+                      </FormLabel>
+                    </div>
                   </FormItem>
                 )}
               />
