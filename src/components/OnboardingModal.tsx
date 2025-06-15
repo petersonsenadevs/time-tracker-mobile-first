@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
@@ -14,6 +13,8 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   const [isGlitching, setIsGlitching] = useState(false);
   const [showModal, setShowModal] = useState(isOpen);
   const [dontShowAgain, setDontShowAgain] = useState(false);
+
+  console.log('OnboardingModal - isOpen:', isOpen, 'showModal:', showModal);
 
   const steps = [
     {
@@ -37,6 +38,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   ];
 
   useEffect(() => {
+    console.log('OnboardingModal useEffect - isOpen cambió a:', isOpen);
     setShowModal(isOpen);
   }, [isOpen]);
 
@@ -67,28 +69,39 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   };
 
   const handleClose = () => {
+    console.log('OnboardingModal - handleClose called, dontShowAgain:', dontShowAgain);
     if (dontShowAgain) {
       localStorage.setItem('onboarding-completed', 'true');
+      console.log('Guardado onboarding-completed en localStorage');
     }
     setShowModal(false);
     onClose();
   };
 
   const handleSkip = () => {
+    console.log('OnboardingModal - handleSkip called, dontShowAgain:', dontShowAgain);
     if (dontShowAgain) {
       localStorage.setItem('onboarding-completed', 'true');
+      console.log('Guardado onboarding-completed en localStorage (skip)');
     }
     setShowModal(false);
     onClose();
   };
 
   const handleFinish = () => {
+    console.log('OnboardingModal - handleFinish called');
     localStorage.setItem('onboarding-completed', 'true');
+    console.log('Guardado onboarding-completed en localStorage (finish)');
     setShowModal(false);
     onClose();
   };
 
-  if (!showModal) return null;
+  if (!showModal) {
+    console.log('OnboardingModal - No renderizando porque showModal es false');
+    return null;
+  }
+
+  console.log('OnboardingModal - Renderizando modal');
 
   const currentStepData = steps[currentStep];
 

@@ -1,3 +1,4 @@
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/services/userService';
@@ -26,12 +27,19 @@ const Dashboard = () => {
 
   // Verificar si el usuario ya vio el onboarding
   useEffect(() => {
+    console.log('Verificando onboarding - Usuario:', user);
     const onboardingCompleted = localStorage.getItem('onboarding-completed');
+    console.log('Onboarding completed en localStorage:', onboardingCompleted);
+    
     if (!onboardingCompleted && user) {
+      console.log('Mostrando onboarding modal...');
       // Mostrar el modal después de un pequeño delay para que se cargue completamente el dashboard
       setTimeout(() => {
         setShowOnboarding(true);
+        console.log('showOnboarding establecido a true');
       }, 1000);
+    } else {
+      console.log('No mostrando onboarding - completed:', onboardingCompleted, 'user:', user);
     }
   }, [user]);
 
@@ -98,8 +106,11 @@ const Dashboard = () => {
   };
 
   const handleCloseOnboarding = () => {
+    console.log('Cerrando onboarding modal');
     setShowOnboarding(false);
   };
+
+  console.log('Renderizando Dashboard - showOnboarding:', showOnboarding);
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden lg:overflow-auto">
