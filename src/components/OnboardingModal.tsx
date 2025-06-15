@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogOverlay } from '@/components/ui/dialog';
@@ -11,10 +12,9 @@ interface OnboardingModalProps {
 const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isGlitching, setIsGlitching] = useState(false);
-  const [showModal, setShowModal] = useState(isOpen);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  console.log('OnboardingModal - isOpen:', isOpen, 'showModal:', showModal);
+  console.log('OnboardingModal - isOpen:', isOpen);
 
   const steps = [
     {
@@ -36,11 +36,6 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
       features: ["Reportes mensuales", "Estadísticas visuales", "Exportación de datos"]
     }
   ];
-
-  useEffect(() => {
-    console.log('OnboardingModal useEffect - isOpen cambió a:', isOpen);
-    setShowModal(isOpen);
-  }, [isOpen]);
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
@@ -74,7 +69,6 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
       localStorage.setItem('onboarding-completed', 'true');
       console.log('Guardado onboarding-completed en localStorage');
     }
-    setShowModal(false);
     onClose();
   };
 
@@ -84,7 +78,6 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
       localStorage.setItem('onboarding-completed', 'true');
       console.log('Guardado onboarding-completed en localStorage (skip)');
     }
-    setShowModal(false);
     onClose();
   };
 
@@ -92,12 +85,11 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
     console.log('OnboardingModal - handleFinish called');
     localStorage.setItem('onboarding-completed', 'true');
     console.log('Guardado onboarding-completed en localStorage (finish)');
-    setShowModal(false);
     onClose();
   };
 
-  if (!showModal) {
-    console.log('OnboardingModal - No renderizando porque showModal es false');
+  if (!isOpen) {
+    console.log('OnboardingModal - No renderizando porque isOpen es false');
     return null;
   }
 
@@ -106,15 +98,15 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
   const currentStepData = steps[currentStep];
 
   return (
-    <Dialog open={showModal} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
-      <DialogContent className="max-w-5xl w-[95%] h-[85vh] bg-gray-900 border-gray-700 p-0 overflow-hidden rounded-2xl">
-        {/* Header Compacto */}
+      <DialogContent className="max-w-4xl w-[90%] h-[75vh] bg-gray-900 border-gray-700 p-0 overflow-hidden rounded-xl">
+        {/* Header */}
         <div className="relative p-4 border-b border-gray-700 bg-gray-800/50">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white">Bienvenido a TimeTracker</h2>
-              <p className="text-gray-400 text-sm mt-1">Descubre cómo usar la aplicación</p>
+              <h2 className="text-lg font-bold text-white">Bienvenido a TimeTracker</h2>
+              <p className="text-gray-400 text-sm">Descubre cómo usar la aplicación</p>
             </div>
             <button
               onClick={handleClose}
@@ -124,7 +116,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
             </button>
           </div>
           
-          {/* Progress Bar Compacto */}
+          {/* Progress Bar */}
           <div className="mt-3">
             <div className="flex space-x-1">
               {steps.map((_, index) => (
@@ -143,9 +135,9 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
           </div>
         </div>
 
-        {/* Content Layout Horizontal Compacto */}
+        {/* Content */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Image Section - Más pequeña */}
+          {/* Image Section */}
           <div className="w-2/5 relative bg-black flex items-center justify-center p-4">
             <div 
               className={`relative w-full h-full flex items-center justify-center transition-all duration-300 ${
@@ -158,7 +150,6 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
                 className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               />
               
-              {/* Glitch Effect Overlay */}
               {isGlitching && (
                 <>
                   <div className="absolute inset-0 bg-teal-500/20 animate-pulse rounded-lg" />
@@ -168,23 +159,23 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
             </div>
           </div>
 
-          {/* Content Section - Más amplia */}
+          {/* Content Section */}
           <div className="w-3/5 p-6 flex flex-col justify-between">
             <div className="flex-1">
-              <h3 className={`text-2xl font-bold mb-3 transition-all duration-300 ${
+              <h3 className={`text-xl font-bold mb-3 transition-all duration-300 ${
                 isGlitching ? 'transform translate-x-2 text-teal-400' : 'transform translate-x-0 text-white'
               }`}>
                 {currentStepData.title}
               </h3>
               
-              <p className={`text-base text-gray-300 mb-4 leading-relaxed transition-all duration-300 ${
+              <p className={`text-sm text-gray-300 mb-4 leading-relaxed transition-all duration-300 ${
                 isGlitching ? 'opacity-50' : 'opacity-100'
               }`}>
                 {currentStepData.description}
               </p>
 
               <div className="space-y-2">
-                <h4 className="text-lg font-semibold text-teal-400 mb-2">Características principales:</h4>
+                <h4 className="text-base font-semibold text-teal-400 mb-2">Características principales:</h4>
                 {currentStepData.features.map((feature, index) => (
                   <div 
                     key={index}
@@ -199,7 +190,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
               </div>
             </div>
 
-            {/* Checkbox para no mostrar más */}
+            {/* Checkbox */}
             <div className="flex items-center space-x-2 mb-4 pt-4 border-t border-gray-700">
               <Checkbox 
                 id="dont-show-again"
@@ -215,7 +206,7 @@ const OnboardingModal = ({ isOpen, onClose }: OnboardingModalProps) => {
               </label>
             </div>
 
-            {/* Navigation Compacta */}
+            {/* Navigation */}
             <div className="flex items-center justify-between">
               <button
                 onClick={prevStep}
