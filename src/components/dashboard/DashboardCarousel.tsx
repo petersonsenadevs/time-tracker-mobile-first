@@ -1,6 +1,5 @@
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import StatsCards from './StatsCards';
 import CalendarSection from './CalendarSection';
 import SalaryInfoCard from './SalaryInfoCard';
 import StatisticsCard from './StatisticsCard';
@@ -31,17 +30,14 @@ const DashboardCarousel = ({
 }: DashboardCarouselProps) => {
   const slides = [
     {
-      id: 'overview',
-      title: 'Resumen General',
+      id: 'calendar',
+      title: 'Calendario',
       content: (
-        <div className="space-y-6 h-full">
-          <StatsCards dashboardStats={dashboardStats} />
-          <CalendarSection 
-            selectedDate={selectedDate}
-            onDateSelect={onDateSelect}
-            onNewWorkDay={onNewWorkDay}
-          />
-        </div>
+        <CalendarSection 
+          selectedDate={selectedDate}
+          onDateSelect={onDateSelect}
+          onNewWorkDay={onNewWorkDay}
+        />
       )
     },
     {
