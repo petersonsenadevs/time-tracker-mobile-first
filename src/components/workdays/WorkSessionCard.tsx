@@ -2,16 +2,17 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Timer, Clock, Briefcase, Pencil } from 'lucide-react';
+import { Timer, Clock, Briefcase, Pencil, Trash2 } from 'lucide-react';
 import { WorkSession } from '@/services/workSessionService';
 
 interface WorkSessionCardProps {
   session: WorkSession;
   index: number;
   onEdit: (session: WorkSession) => void;
+  onDelete: (session: WorkSession) => void;
 }
 
-const WorkSessionCard = ({ session, index, onEdit }: WorkSessionCardProps) => {
+const WorkSessionCard = ({ session, index, onEdit, onDelete }: WorkSessionCardProps) => {
   const formatTime = (time: string) => {
     return time.slice(0, 5);
   };
@@ -39,14 +40,24 @@ const WorkSessionCard = ({ session, index, onEdit }: WorkSessionCardProps) => {
             <div className="text-lg font-bold text-teal-400">
               {getTotalHours(session).toFixed(1)}h total
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(session)}
-              className="text-gray-400 hover:text-teal-400 h-8 w-8 p-0"
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onEdit(session)}
+                className="text-gray-400 hover:text-teal-400 h-8 w-8 p-0"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(session)}
+                className="text-gray-400 hover:text-red-400 h-8 w-8 p-0"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardTitle>
       </CardHeader>

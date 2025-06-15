@@ -1,3 +1,4 @@
+
 const API_BASE_URL = 'https://jornalia-api.fly.dev';
 
 interface ApiError {
@@ -87,6 +88,15 @@ class ApiClient {
   async getWithAuth<T>(endpoint: string, token: string): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  }
+
+  async deleteWithAuth<T>(endpoint: string, token: string): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
       },

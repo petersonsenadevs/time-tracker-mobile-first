@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { workSessionService, WorkSession } from '@/services/workSessionService';
 import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
@@ -11,12 +11,14 @@ import EditWorkSessionForm from '@/components/EditWorkSessionForm';
 import WorkDaysSearch from '@/components/workdays/WorkDaysSearch';
 import WorkSessionCard from '@/components/workdays/WorkSessionCard';
 import { LoadingState, ErrorState, EmptyState } from '@/components/workdays/WorkDaysStates';
+import { toast } from '@/components/ui/use-toast';
 
 const WorkDays = () => {
   const { token, logout } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentSearchDate, setCurrentSearchDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: workSessionData, isLoading, error } = useQuery({
     queryKey: ['workSessions', currentSearchDate, token],
@@ -24,6 +26,24 @@ const WorkDays = () => {
       return workSessionService.getWorkSessions(currentSearchDate, token!);
     },
     enabled: !!token && !!currentSearchDate,
+  });
+
+  const deleteSessionMutation = useMutation({
+    mutationFn: (date: string) => workSessionService.deleteWorkSession(date, token!),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workSessions', currentSearchDate, token] });
+      toast({
+        title: "Éxito",
+        description: "Jornada eliminada correctamente",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "No se pudo eliminar la jornada",
+        variant: "destructive",
+      });
+    },
   });
 
   const workSessions = workSessionData?.hour_session_with_hour_worked || [];
@@ -40,6 +60,12 @@ const WorkDays = () => {
       setSelectedDate(date);
       const formattedDate = format(date, 'yyyy-MM-dd');
       setCurrentSearchDate(formattedDate);
+    }
+  };
+
+  const handleDeleteSession = (session: WorkSession) => {
+    if (confirm('¿Estás seguro de que quieres eliminar esta jornada?')) {
+      deleteSessionMutation.mutate(session.date);
     }
   };
 
@@ -83,6 +109,7 @@ const WorkDays = () => {
                 session={session}
                 index={index}
                 onEdit={setEditingSession}
+                onDelete={handleDeleteSession}
               />
             ))
           )}

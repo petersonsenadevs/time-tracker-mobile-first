@@ -26,6 +26,10 @@ class WorkSessionService {
     // La fecha ya viene en formato yyyy-mm-dd desde el componente
     return apiClient.getWithAuth<WorkSessionResponse>(`/api/session_worked?date=${date}`, token);
   }
+
+  async deleteWorkSession(date: string, token: string): Promise<{ message: string }> {
+    return apiClient.deleteWithAuth<{ message: string }>(`/api/hour_session?date=${date}`, token);
+  }
 }
 
 export const workSessionService = new WorkSessionService();
