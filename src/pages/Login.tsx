@@ -59,13 +59,12 @@ const Login = () => {
   };
 
   return (
-    <AuthBackground>
       <div className="flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md space-y-8">
           {/* Logo */}
           <div className="text-center">
-            <div className="flex items-center justify-center mb-6">
-              <Logo height="h-16" />
+            <div className="flex items-center justify-center mb-2">
+              <Logo height="h-32" />
             </div>
             <h2 className="text-3xl font-bold text-white">Iniciar Sesión</h2>
             <p className="mt-2 text-gray-400">Accede a tu cuenta para gestionar tus horas</p>
@@ -160,7 +159,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </AuthBackground>
   );
 };
 

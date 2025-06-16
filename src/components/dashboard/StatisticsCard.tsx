@@ -64,10 +64,10 @@ const StatisticsCard = ({ employee, dashboardStats }: StatisticsCardProps) => {
             <p className="text-gray-400 text-sm mt-1">0% de la meta semanal completada</p>
           </div>
 
-          <div className="p-4 bg-gray-800/50 rounded-lg">
+         {/*  <div className="p-4 bg-gray-800/50 rounded-lg">
             <h4 className="text-white font-medium mb-2">Últimas Actividades</h4>
             <p className="text-gray-400 text-sm">No hay registros de actividad aún</p>
-          </div>
+          </div> */}
         </div>
       </CardContent>
     </Card>

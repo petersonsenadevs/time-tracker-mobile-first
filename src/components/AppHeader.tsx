@@ -31,7 +31,7 @@ const AppHeader = ({
         <div className="flex items-center justify-between h-full">
           {/* Left side - Logo + Page Title */}
           <div className="flex items-center space-x-4">
-            <Logo height="h-8" showLink={false} />
+            <Logo height="h-12" showLink={false} />
             <div className="hidden sm:flex items-center space-x-2 border-l border-gray-700 pl-4">
               <PageIcon className="h-5 w-5 text-teal-400" />
               <span className="text-white font-medium">{pageTitle}</span>

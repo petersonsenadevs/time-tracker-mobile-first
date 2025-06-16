@@ -70,7 +70,7 @@ const SalaryInfoCard = ({ employee, isLoadingEmployee }: SalaryInfoCardProps) =>
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg">
+           {/*  <div className="mt-6 p-4 bg-teal-500/10 border border-teal-500/20 rounded-lg">
               <h3 className="text-white font-semibold mb-2">Resumen de Tarifas</h3>
               <div className="text-sm text-gray-300 space-y-1">
                 <p>• Horario normal: Lunes a Viernes, 8:00 AM - 6:00 PM</p>
@@ -78,7 +78,7 @@ const SalaryInfoCard = ({ employee, isLoadingEmployee }: SalaryInfoCardProps) =>
                 <p>• Horas nocturnas: Entre 10:00 PM y 6:00 AM</p>
                 <p>• Días festivos: Días oficiales no laborables</p>
               </div>
-            </div>
+            </div> */}
           </>
         ) : (
           <div className="text-center text-red-400">

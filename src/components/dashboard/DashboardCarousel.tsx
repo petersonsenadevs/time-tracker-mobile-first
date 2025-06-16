@@ -65,6 +65,16 @@ const DashboardCarousel = ({
         />
       )
     },
+     {
+      id: 'stats',
+      title: 'Estadísticas',
+      content: (
+        <StatisticsCard 
+          employee={employee} 
+          dashboardStats={dashboardStats}
+        />
+      )
+    },
     {
       id: 'salary',
       title: 'Información Salarial',
@@ -75,16 +85,7 @@ const DashboardCarousel = ({
         />
       )
     },
-    {
-      id: 'stats',
-      title: 'Estadísticas',
-      content: (
-        <StatisticsCard 
-          employee={employee} 
-          dashboardStats={dashboardStats}
-        />
-      )
-    }
+   
   ];
 
   return (
