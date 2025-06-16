@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -63,7 +64,7 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
-            <Logo size="lg" />
+            <Logo height="h-16" />
           </div>
           <h2 className="text-3xl font-bold text-white">Iniciar Sesión</h2>
           <p className="mt-2 text-gray-400">Accede a tu cuenta para gestionar tus horas</p>
