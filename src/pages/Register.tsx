@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +12,7 @@ import RegisterProgress from '@/components/register/RegisterProgress';
 import PersonalInfoStep from '@/components/register/PersonalInfoStep';
 import RatesConfigStep from '@/components/register/RatesConfigStep';
 import RegisterNavigation from '@/components/register/RegisterNavigation';
+import AuthBackground from '@/components/auth/AuthBackground';
 
 const registerSchema = z.object({
   name: z.string()
@@ -117,52 +117,54 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <RegisterHeader />
-        <RegisterProgress currentStep={currentStep} />
+    <AuthBackground>
+      <div className="py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <RegisterHeader />
+          <RegisterProgress currentStep={currentStep} />
 
-        {/* Formulario con Carrusel */}
-        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-teal-500/20">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {/* Página 1: Información Personal */}
-                  <CarouselItem className={currentStep === 0 ? 'block' : 'hidden'}>
-                    <PersonalInfoStep control={form.control} isLoading={isLoading} />
-                  </CarouselItem>
+          {/* Formulario con Carrusel */}
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-8 border border-teal-500/20">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {/* Página 1: Información Personal */}
+                    <CarouselItem className={currentStep === 0 ? 'block' : 'hidden'}>
+                      <PersonalInfoStep control={form.control} isLoading={isLoading} />
+                    </CarouselItem>
 
-                  {/* Página 2: Tarifas y Configuración */}
-                  <CarouselItem className={currentStep === 1 ? 'block' : 'hidden'}>
-                    <RatesConfigStep control={form.control} isLoading={isLoading} />
-                  </CarouselItem>
-                </CarouselContent>
-              </Carousel>
+                    {/* Página 2: Tarifas y Configuración */}
+                    <CarouselItem className={currentStep === 1 ? 'block' : 'hidden'}>
+                      <RatesConfigStep control={form.control} isLoading={isLoading} />
+                    </CarouselItem>
+                  </CarouselContent>
+                </Carousel>
 
-              <RegisterNavigation
-                currentStep={currentStep}
-                isLoading={isLoading}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-              />
-            </form>
-          </Form>
+                <RegisterNavigation
+                  currentStep={currentStep}
+                  isLoading={isLoading}
+                  onPrevious={handlePrevious}
+                  onNext={handleNext}
+                />
+              </form>
+            </Form>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-400">
-              ¿Ya tienes cuenta?{' '}
-              <Link 
-                to="/login" 
-                className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
-              >
-                Iniciar Sesión
-              </Link>
-            </p>
+            <div className="mt-6 text-center">
+              <p className="text-gray-400">
+                ¿Ya tienes cuenta?{' '}
+                <Link 
+                  to="/login" 
+                  className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+                >
+                  Iniciar Sesión
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </AuthBackground>
   );
 };
 
