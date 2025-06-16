@@ -1,4 +1,3 @@
-
 const API_BASE_URL = 'https://jornalia-api.fly.dev';
 
 interface ApiError {
@@ -18,23 +17,32 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    
-    const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
+
+    // Preparamos headers
+    const headers: Record<string, string> = {
+      ...((options.headers as Record<string, string>) || {}),
     };
 
+    if (options.body) {
+      headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+    }
+
+    const config: RequestInit = {
+      ...options,
+      headers,
+    };
+
+    console.log('Sending request to:', url);
+    console.log('With headers:', config.headers);
+    console.log('And body:', config.body);
+
     const response = await fetch(url, config);
-    
+
     if (!response.ok) {
       const errorData: ApiError = await response.json().catch(() => ({
-        message: 'Error de conexión con el servidor'
+        message: 'Error de conexión con el servidor',
       }));
-      
-      // Crear error con información de validación si existe
+
       const error = new Error(errorData.message || `Error ${response.status}`) as any;
       if (errorData.errors) {
         error.errors = errorData.errors;
@@ -57,11 +65,12 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
+  // Otros métodos siguen igual...
   async put<T>(endpoint: string, data: any): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
@@ -74,7 +83,7 @@ class ApiClient {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -89,7 +98,7 @@ class ApiClient {
     return this.request<T>(endpoint, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -98,7 +107,7 @@ class ApiClient {
     return this.request<T>(endpoint, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
   }
