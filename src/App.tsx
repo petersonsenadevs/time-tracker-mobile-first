@@ -21,6 +21,7 @@ const queryClient = new QueryClient();
 const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isCheckingAuth } = useAuth();
   
+  // Consistent with ProtectedRoute - show loader while checking auth
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -32,10 +33,14 @@ const AuthenticatedRedirect = ({ children }: { children: React.ReactNode }) => {
     );
   }
   
+  // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
+    console.log('User already authenticated, redirecting to dashboard');
     return <Navigate to="/dashboard" replace />;
   }
   
+  // If not authenticated, show the login/register page
+  console.log('User not authenticated, showing login/register page');
   return <>{children}</>;
 };
 
