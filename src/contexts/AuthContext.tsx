@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<AuthUser | null>(null);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true); // Start as true to check on load
   const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
@@ -132,6 +132,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuthStatus = async () => {
     if (!token) {
+      console.log('No token found, not authenticated');
+      setUser(null);
       setIsCheckingAuth(false);
       return;
     }
@@ -145,27 +147,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Verificar si hay datos de usuario válidos
       if (dashboardResponse.user && dashboardResponse.user.id) {
         setUser(dashboardResponse.user);
+        console.log('User authenticated:', dashboardResponse.user);
       } else {
         // Si no hay datos de usuario válidos, crear un usuario básico
-        setUser({ 
+        const basicUser = { 
           id: 1, 
           email: 'user@example.com', 
           name: 'Usuario' 
-        });
+        };
+        setUser(basicUser);
+        console.log('Using basic user data:', basicUser);
       }
       setDashboardStats(dashboardResponse.dashboardData);
     } catch (error) {
       console.error('Auth verification failed:', error);
-      logout();
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem('token');
     } finally {
       setIsCheckingAuth(false);
     }
   };
 
+  // Run auth check when component mounts or token changes
   useEffect(() => {
-    if (token && !user) {
-      checkAuthStatus();
-    }
+    checkAuthStatus();
   }, [token]);
 
   const logout = () => {
